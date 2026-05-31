@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Playstation;
 
 class PlaystationController extends Controller
 {
@@ -30,7 +31,6 @@ class PlaystationController extends Controller
     public function store(Request $request)
     {
         Playstation::create([
-        'rental_id' => 1,
         'nomor_ps' => $request->nomor_ps,
         'tipe_ps' => $request->tipe_ps,
         'harga_per_jam' => $request->harga_per_jam,
@@ -53,7 +53,12 @@ class PlaystationController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $playstation = Playstation::findOrFail($id);
+
+        return view(
+            'playstations.edit',
+            compact('playstation')
+        );
     }
 
     /**
@@ -61,7 +66,16 @@ class PlaystationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $playstation = Playstation::findOrFail($id);
+
+        $playstation->update([
+            'nomor_ps' => $request->nomor_ps,
+            'tipe_ps' => $request->tipe_ps,
+            'harga_per_jam' => $request->harga_per_jam,
+        ]);
+
+        return redirect()
+            ->route('playstations.index');
     }
 
     /**
@@ -69,6 +83,9 @@ class PlaystationController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Playstation::destroy($id);
+
+        return redirect()
+            ->route('playstations.index');
     }
 }
