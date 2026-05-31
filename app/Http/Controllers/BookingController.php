@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Booking;
+use App\Models\Playstation;
 
 class BookingController extends Controller
 {
@@ -11,7 +13,15 @@ class BookingController extends Controller
      */
     public function index()
     {
-        //
+        $bookings = Booking::where(
+            'user_id',
+            auth()->id()
+        )->get();
+
+        return view(
+            'pembeli.bookings.index',
+            compact('bookings')
+        );
     }
 
     /**
@@ -19,7 +29,12 @@ class BookingController extends Controller
      */
     public function create()
     {
-        //
+        $playstations = Playstation::all();
+
+        return view(
+            'pembeli.bookings.create',
+            compact('playstations')
+        );
     }
 
     /**
@@ -27,6 +42,13 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'playstation_id' => 'required',
+            'tanggal' => 'required|date',
+            'jam_mulai' => 'required',
+            'durasi' => 'required|integer|min:1'
+        ]);   
+    
         $playstation = Playstation::findOrFail($request->playstation_id);
 
         $total = $request->durasi * $playstation->harga_per_jam;
@@ -39,7 +61,7 @@ class BookingController extends Controller
         if($existing){
             return back()->with('error', 'Jadwal sudah dibooking');
         }
-        
+
         Booking::create([
             'user_id' => auth()->id(),
             'playstation_id' => $request->playstation_id,
@@ -50,7 +72,12 @@ class BookingController extends Controller
             'status' => 'pending'
         ]);
 
-        return redirect()->back();
+        return redirect()
+            ->route('bookings.index')
+            ->with(
+                'success',
+                'Booking berhasil dibuat'
+            );
     }
 
     /**

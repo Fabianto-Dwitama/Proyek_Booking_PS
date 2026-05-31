@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Payment;
+use App\Models\Booking;
 
 class PaymentController extends Controller
 {
@@ -17,9 +19,14 @@ class PaymentController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $booking_id = $request->booking_id;
+
+        return view(
+            'pembeli.payments.create',
+            compact('booking_id')
+        );
     }
 
     /**
@@ -27,7 +34,14 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
-        $path = $request->file('bukti_transfer')
+        $request->validate([
+            'booking_id' => 'required',
+            'metode' => 'required',
+            'bukti_transfer' => 'required|image'
+        ]);
+
+        $path = $request
+            ->file('bukti_transfer')
             ->store('payments', 'public');
 
         Payment::create([
@@ -37,7 +51,10 @@ class PaymentController extends Controller
             'status' => 'pending'
         ]);
 
-        return back();
+        return back()->with(
+            'success',
+            'Bukti pembayaran berhasil diupload'
+        );
     }
 
     /**

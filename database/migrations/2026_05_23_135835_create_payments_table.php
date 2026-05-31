@@ -12,7 +12,24 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('payments', function (Blueprint $table) {
+
             $table->id();
+
+            $table->foreignId('booking_id')
+                ->constrained()
+                ->onDelete('cascade');
+
+            $table->string('metode');
+
+            $table->string('bukti_transfer')
+                ->nullable();
+
+            $table->enum('status', [
+                'pending',
+                'verified',
+                'rejected'
+            ])->default('pending');
+
             $table->timestamps();
         });
     }
