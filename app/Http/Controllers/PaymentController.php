@@ -21,11 +21,15 @@ class PaymentController extends Controller
      */
     public function create(Request $request)
     {
-        $booking_id = $request->booking_id;
+        $booking = Booking::with(
+            'playstation.owner'
+        )->findOrFail(
+            $request->booking_id
+        );
 
         return view(
             'pembeli.payments.create',
-            compact('booking_id')
+            compact('booking')
         );
     }
 
@@ -37,26 +41,23 @@ class PaymentController extends Controller
         $request->validate([
             'booking_id' => 'required',
             'metode' => 'required',
-            'bukti_transfer' => 'required|image'
+            'nominal' => 'required|numeric|min:1000',
         ]);
-
-        $path = $request
-            ->file('bukti_transfer')
-            ->store('payments', 'public');
 
         Payment::create([
             'booking_id' => $request->booking_id,
             'metode' => $request->metode,
-            'bukti_transfer' => $path,
+            'nominal' => $request->nominal,
             'status' => 'pending'
         ]);
 
-        return back()->with(
-            'success',
-            'Bukti pembayaran berhasil diupload'
-        );
+        return redirect()
+            ->route('bookings.index')
+            ->with(
+                'success',
+                'Pembayaran berhasil dikirim. Silakan kirim bukti transfer ke WhatsApp Owner.'
+            );
     }
-
     /**
      * Display the specified resource.
      */

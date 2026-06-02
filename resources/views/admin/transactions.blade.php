@@ -22,7 +22,7 @@
             <div class="p-4 border-b">
 
                 <h3 class="text-lg font-bold">
-                    Data Transaksi Pembayaran
+                    Riwayat Transaksi
                 </h3>
 
                 <p class="text-gray-500 text-sm mt-1">
@@ -39,8 +39,9 @@
                         <th class="px-4 py-3 text-left">ID</th>
                         <th class="px-4 py-3 text-left">Booking ID</th>
                         <th class="px-4 py-3 text-left">Metode</th>
+                        <th class="px-4 py-3 text-left">Nominal</th>
                         <th class="px-4 py-3 text-left">Status</th>
-                        <th class="px-4 py-3 text-center">Bukti Transfer</th>
+                        <th class="px-4 py-3 text-left">Tanggal</th>
                     </tr>
 
                 </thead>
@@ -56,11 +57,15 @@
                             </td>
 
                             <td class="px-4 py-3">
-                                #{{ $payment->booking_id }}
+                                {{ $payment->booking_id }}
                             </td>
 
                             <td class="px-4 py-3">
                                 {{ $payment->metode }}
+                            </td>
+
+                            <td class="px-4 py-3 font-semibold text-green-600">
+                                Rp {{ number_format($payment->nominal, 0, ',', '.') }}
                             </td>
 
                             <td class="px-4 py-3">
@@ -87,16 +92,8 @@
 
                             </td>
 
-                            <td class="px-4 py-3 text-center">
-
-                                <a
-                                    href="{{ asset('storage/'.$payment->bukti_transfer) }}"
-                                    target="_blank"
-                                    class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded"
-                                >
-                                    Lihat Bukti
-                                </a>
-
+                            <td class="px-4 py-3">
+                                {{ $payment->created_at->format('d-m-Y H:i') }}
                             </td>
 
                         </tr>
@@ -105,8 +102,8 @@
 
                         <tr>
 
-                            <td colspan="5" class="text-center py-6 text-gray-500">
-                                Belum ada transaksi pembayaran
+                            <td colspan="6" class="text-center py-6 text-gray-500">
+                                Belum ada transaksi
                             </td>
 
                         </tr>

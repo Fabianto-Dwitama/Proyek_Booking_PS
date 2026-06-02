@@ -25,4 +25,28 @@ class Booking extends Model
     return Carbon::parse($this->tanggal)
         ->format('d-m-Y');
     }
+
+    public function playstation()
+    {
+        return $this->belongsTo(
+            \App\Models\Playstation::class
+        );
+    }
+
+    public function payment()
+    {
+        return $this->hasOne(Payment::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(
+            \App\Models\User::class
+        );
+    }
+
+    public function owner()
+    {
+        return $this->playstation->owner;
+    }
 }

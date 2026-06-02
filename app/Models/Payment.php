@@ -12,7 +12,14 @@ class Payment extends Model
     protected $fillable = [
         'booking_id',
         'metode',
-        'bukti_transfer',
+        'nominal',
         'status',
     ];
+
+    public function booking()
+    {
+        return $this->belongsTo(
+            Booking::class
+        );
+    }
 }

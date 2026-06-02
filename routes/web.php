@@ -92,5 +92,34 @@ Route::delete(
     [AdminController::class, 'destroyBooking']
 );
 
+Route::delete(
+    '/admin/users/{id}',
+    [AdminController::class, 'destroyUser']
+);
+
+Route::post(
+    '/admin/owners',
+    [AdminController::class, 'storeOwner']
+);
+
+Route::delete(
+    '/admin/owners/{id}',
+    [AdminController::class, 'destroyOwner']
+);
+
+Route::get(
+    '/admin/owners/{id}',
+    [AdminController::class, 'showOwner']
+);
+
+Route::get(
+    '/owner/profile',
+    [OwnerController::class, 'profile']
+);
+
+Route::post(
+    '/owner/profile',
+    [OwnerController::class, 'updateProfile']
+);
 
 require __DIR__.'/auth.php';

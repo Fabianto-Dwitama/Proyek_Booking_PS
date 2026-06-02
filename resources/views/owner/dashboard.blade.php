@@ -24,7 +24,7 @@
         </div>
 
         <!-- Statistik -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
 
             <div class="bg-white shadow rounded p-6">
 
@@ -46,6 +46,30 @@
 
                 <p class="text-4xl font-bold text-green-600 mt-2">
                     {{ $jumlahBooking }}
+                </p>
+
+            </div>
+
+            <div class="bg-white shadow rounded p-6">
+
+                <h4 class="text-gray-500 text-sm uppercase">
+                    Total Pendapatan
+                </h4>
+
+                <p class="text-4xl font-bold text-emerald-600 mt-2">
+                    Rp {{ number_format($pendapatan,0,',','.') }}
+                </p>
+
+            </div>
+
+            <div class="bg-white shadow rounded p-6">
+
+                <h4 class="text-gray-500 text-sm uppercase">
+                    Booking Pending
+                </h4>
+
+                <p class="text-4xl font-bold text-orange-500 mt-2">
+                    {{ $bookingPending }}
                 </p>
 
             </div>
@@ -82,6 +106,12 @@
                     💰 Verifikasi Pembayaran
                 </a>
 
+                <a
+                    href="/owner/profile"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded"
+                >
+                    ⚙️ Data Pembayaran
+                </a>
             </div>
 
         </div>

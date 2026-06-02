@@ -22,6 +22,12 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        
+        'whatsapp',
+        'rekening_bca',
+        'rekening_bni',
+        'dana',
+        'gopay'
     ];
 
     /**
@@ -43,4 +49,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function playstations()
+    {
+        return $this->hasMany(
+            Playstation::class,
+            'owner_id'
+        );
+    }
 }

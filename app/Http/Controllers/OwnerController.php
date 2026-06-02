@@ -1,27 +1,81 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Playstation;
 use App\Models\Booking;
 use App\Models\Payment;
+use Illuminate\Http\Request;
 
 class OwnerController extends Controller
 {
     public function dashboard()
     {
-        $jumlahPlaystation = Playstation::count();
-        
-        $jumlahBooking = Booking::count();
+        $ownerId = auth()->id();
+
+        $jumlahPlaystation = Playstation::where(
+            'owner_id',
+            $ownerId
+        )->count();
+
+        $jumlahBooking = Booking::whereHas(
+            'playstation',
+            function ($q) use ($ownerId) {
+                $q->where('owner_id', $ownerId);
+            }
+        )->count();
+
+        $bookingPending = Booking::where(
+            'status',
+            'pending'
+        )
+        ->whereHas(
+            'playstation',
+            function ($q) use ($ownerId) {
+                $q->where('owner_id', $ownerId);
+            }
+        )
+        ->count();
+
+        $pendapatan = Payment::where(
+            'status',
+            'verified'
+        )
+        ->whereHas(
+            'booking.playstation',
+            function ($q) use ($ownerId) {
+                $q->where('owner_id', $ownerId);
+            }
+        )
+        ->sum('nominal');
 
         return view(
             'owner.dashboard',
-            compact('jumlahPlaystation', 'jumlahBooking')
+            compact(
+                'jumlahPlaystation',
+                'jumlahBooking',
+                'bookingPending',
+                'pendapatan'
+            )
         );
     }
 
     public function bookings()
     {
-        $bookings = Booking::latest()->get();
+        $ownerId = auth()->id();
+
+        $bookings = Booking::with([
+            'user',
+            'playstation'
+        ])
+        ->whereHas(
+            'playstation',
+            function ($q) use ($ownerId) {
+                $q->where('owner_id', $ownerId);
+            }
+        )
+        ->latest()
+        ->get();
 
         return view(
             'owner.bookings',
@@ -31,7 +85,20 @@ class OwnerController extends Controller
 
     public function payments()
     {
-        $payments = Payment::latest()->get();
+        $ownerId = auth()->id();
+
+        $payments = Payment::with([
+            'booking.user',
+            'booking.playstation'
+        ])
+        ->whereHas(
+            'booking.playstation',
+            function ($q) use ($ownerId) {
+                $q->where('owner_id', $ownerId);
+            }
+        )
+        ->latest()
+        ->get();
 
         return view(
             'owner.payments',
@@ -41,7 +108,14 @@ class OwnerController extends Controller
 
     public function verifyPayment($id)
     {
-        $payment = Payment::findOrFail($id);
+        $ownerId = auth()->id();
+
+        $payment = Payment::whereHas(
+            'booking.playstation',
+            function ($q) use ($ownerId) {
+                $q->where('owner_id', $ownerId);
+            }
+        )->findOrFail($id);
 
         $payment->update([
             'status' => 'verified'
@@ -57,6 +131,38 @@ class OwnerController extends Controller
         return back()->with(
             'success',
             'Pembayaran berhasil diverifikasi'
+        );
+    }
+
+    public function profile()
+    {
+        return view(
+            'owner.profile',
+            [
+                'owner' => auth()->user()
+            ]
+        );
+    }
+
+    public function updateProfile(Request $request)
+    {
+        auth()->user()->update([
+
+            'whatsapp' => $request->whatsapp,
+
+            'rekening_bca' => $request->rekening_bca,
+
+            'rekening_bni' => $request->rekening_bni,
+
+            'dana' => $request->dana,
+
+            'gopay' => $request->gopay,
+
+        ]);
+
+        return back()->with(
+            'success',
+            'Data pembayaran berhasil diperbarui'
         );
     }
 }

@@ -76,10 +76,18 @@
         <!-- Tabel Playstation -->
         <div class="bg-white shadow rounded overflow-hidden">
 
-            <div class="p-4 border-b">
-                <h3 class="text-lg font-bold">
-                    Daftar Playstation
-                </h3>
+            <div class="p-4 border-b flex justify-between items-center">
+
+                <div>
+                    <h3 class="text-lg font-bold">
+                        Daftar Playstation Saya
+                    </h3>
+
+                    <p class="text-gray-500 text-sm">
+                        Total PS : {{ $playstations->count() }}
+                    </p>
+                </div>
+
             </div>
 
             <table class="min-w-full">
@@ -90,6 +98,7 @@
                         <th class="px-4 py-3 text-left">Nomor PS</th>
                         <th class="px-4 py-3 text-left">Tipe</th>
                         <th class="px-4 py-3 text-left">Harga/Jam</th>
+                        <th class="px-4 py-3 text-left">Status</th>
                         <th class="px-4 py-3 text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -98,13 +107,13 @@
 
                     @forelse($playstations as $ps)
 
-                        <tr class="border-b">
+                        <tr class="border-b hover:bg-gray-50">
 
                             <td class="px-4 py-3">
                                 {{ $loop->iteration }}
                             </td>
 
-                            <td class="px-4 py-3">
+                            <td class="px-4 py-3 font-medium">
                                 {{ $ps->nomor_ps }}
                             </td>
 
@@ -112,8 +121,26 @@
                                 {{ $ps->tipe_ps }}
                             </td>
 
-                            <td class="px-4 py-3">
+                            <td class="px-4 py-3 font-semibold text-green-600">
                                 Rp {{ number_format($ps->harga_per_jam, 0, ',', '.') }}
+                            </td>
+
+                            <td class="px-4 py-3">
+
+                                @if($ps->status == 'tersedia')
+
+                                    <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
+                                        Tersedia
+                                    </span>
+
+                                @else
+
+                                    <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm">
+                                        Dipakai
+                                    </span>
+
+                                @endif
+
                             </td>
 
                             <td class="px-4 py-3 text-center">
@@ -149,9 +176,23 @@
                     @empty
 
                         <tr>
-                            <td colspan="5" class="text-center py-6 text-gray-500">
-                                Belum ada data Playstation
+
+                            <td colspan="6" class="text-center py-8 text-gray-500">
+
+                                <div class="flex flex-col items-center">
+
+                                    <div class="text-5xl mb-2">
+                                        🎮
+                                    </div>
+
+                                    <div>
+                                        Belum ada Playstation yang ditambahkan
+                                    </div>
+
+                                </div>
+
                             </td>
+
                         </tr>
 
                     @endforelse
@@ -161,8 +202,6 @@
             </table>
 
         </div>
-
     </div>
 </div>
-
 </x-app-layout>
