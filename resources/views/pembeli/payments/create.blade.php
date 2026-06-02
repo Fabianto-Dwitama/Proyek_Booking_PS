@@ -1,64 +1,155 @@
-<a
-    href="{{ route('bookings.index') }}"
-    style="
-        background:#6b7280;
-        color:white;
-        padding:8px 12px;
-        text-decoration:none;
-        border-radius:4px;
-    "
->
-    ← Kembali ke Booking Saya
-</a>
+<x-app-layout>
 
-<br><br>
+<x-slot name="header">
+    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        💳 Upload Bukti Pembayaran
+    </h2>
+</x-slot>
 
-<h1>Upload Bukti Pembayaran</h1>
+<div class="py-6">
 
-@if(session('success'))
-    <p style="color:green;">
-        {{ session('success') }}
-    </p>
-@endif
+    <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
 
-<form
-    action="{{ route('payments.store') }}"
-    method="POST"
-    enctype="multipart/form-data"
->
-    @csrf
-
-    <p>
-        Booking ID:
-        <input
-            type="number"
-            name="booking_id"
-            value="{{ $booking_id }}"
-            readonly
+        <a
+            href="{{ route('bookings.index') }}"
+            class="inline-block mb-4 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
         >
-    </p>
+            ← Kembali ke Booking Saya
+        </a>
 
-    <p>
-        Metode Pembayaran:
-        <input
-            type="text"
-            name="metode"
-            placeholder="Transfer BCA"
-            required
-        >
-    </p>
+        @if(session('success'))
 
-    <p>
-        Bukti Transfer:
-        <input
-            type="file"
-            name="bukti_transfer"
-            required
-        >
-    </p>
+            <div class="mb-4 p-4 bg-green-100 text-green-700 rounded">
+                {{ session('success') }}
+            </div>
 
-    <button type="submit">
-        Upload Bukti
-    </button>
+        @endif
 
-</form>
+        <div class="bg-yellow-50 border border-yellow-300 rounded p-4 mb-6">
+
+            <h3 class="font-bold text-lg mb-3">
+                Informasi Pembayaran
+            </h3>
+
+            <p>
+                <strong>Transfer BCA</strong><br>
+                1234567890<br>
+                A/N Rental Playstation
+            </p>
+
+            <br>
+
+            <p>
+                <strong>Transfer BNI</strong><br>
+                9876543210<br>
+                A/N Rental Playstation
+            </p>
+
+            <br>
+
+            <p>
+                <strong>DANA</strong><br>
+                081234567890
+            </p>
+
+            <br>
+
+            <p>
+                <strong>GoPay</strong><br>
+                081234567890
+            </p>
+
+        </div>
+
+        <div class="bg-white shadow rounded p-6">
+
+            <form
+                action="{{ route('payments.store') }}"
+                method="POST"
+                enctype="multipart/form-data"
+            >
+                @csrf
+
+                <div class="mb-4">
+
+                    <label class="block font-medium mb-2">
+                        Booking ID
+                    </label>
+
+                    <input
+                        type="number"
+                        name="booking_id"
+                        value="{{ $booking_id }}"
+                        readonly
+                        class="w-full border rounded px-3 py-2 bg-gray-100"
+                    >
+
+                </div>
+
+                <div class="mb-4">
+
+                    <label class="block font-medium mb-2">
+                        Metode Pembayaran
+                    </label>
+
+                    <select
+                        name="metode"
+                        required
+                        class="w-full border rounded px-3 py-2"
+                    >
+
+                        <option value="">
+                            -- Pilih Metode Pembayaran --
+                        </option>
+
+                        <option value="Transfer BCA">
+                            Transfer BCA
+                        </option>
+
+                        <option value="Transfer BNI">
+                            Transfer BNI
+                        </option>
+
+                        <option value="DANA">
+                            DANA
+                        </option>
+
+                        <option value="GoPay">
+                            GoPay
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="mb-4">
+
+                    <label class="block font-medium mb-2">
+                        Upload Bukti Transfer
+                    </label>
+
+                    <input
+                        type="file"
+                        name="bukti_transfer"
+                        required
+                        class="w-full border rounded px-3 py-2"
+                    >
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                >
+                    Upload Bukti Pembayaran
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+</x-app-layout>

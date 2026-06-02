@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Booking extends Model
 {
@@ -18,4 +19,10 @@ class Booking extends Model
         'total_harga',
         'status',
     ];
+
+    public function getTanggalIndonesiaAttribute()
+    {
+    return Carbon::parse($this->tanggal)
+        ->format('d-m-Y');
+    }
 }

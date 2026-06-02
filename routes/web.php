@@ -40,7 +40,14 @@ Route::middleware(['auth', 'role:admin'])
 
     Route::get('/dashboard',
         [AdminController::class, 'dashboard']);
-
+    Route::get('/bookings',
+        [AdminController::class, 'bookings']);
+    Route::get('/users',
+        [AdminController::class, 'users']);
+    Route::get('/owners',
+        [AdminController::class, 'owners']);
+    Route::get('/transactions',
+    [AdminController::class, 'transactions']);
 });
 
 Route::middleware(['auth', 'role:owner'])
@@ -51,6 +58,21 @@ Route::middleware(['auth', 'role:owner'])
         [OwnerController::class, 'dashboard']);
     
     Route::resource('playstations', PlaystationController::class);
+
+    Route::get(
+        '/bookings',
+        [OwnerController::class, 'bookings']
+    );
+
+    Route::get(
+        '/payments',
+        [OwnerController::class, 'payments']
+    );
+
+    Route::patch(
+        '/payments/{id}/verify',
+        [OwnerController::class, 'verifyPayment']
+    );
 });
 
 Route::middleware(['auth', 'role:pembeli'])
@@ -65,6 +87,10 @@ Route::middleware(['auth', 'role:pembeli'])
 
 });
 
+Route::delete(
+    '/admin/bookings/{id}',
+    [AdminController::class, 'destroyBooking']
+);
 
 
 require __DIR__.'/auth.php';

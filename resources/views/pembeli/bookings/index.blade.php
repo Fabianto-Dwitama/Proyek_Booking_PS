@@ -41,7 +41,7 @@
 
         <td>{{ $booking->tanggal }}</td>
 
-        <td>{{ $booking->jam_mulai }}</td>
+        <td>{{ $booking->tanggal_indonesia }}</td>
 
         <td>{{ $booking->durasi }} Jam</td>
 
@@ -50,7 +50,13 @@
         </td>
 
         <td>
-            {{ $booking->status }}
+            @if($booking->status == 'pending')
+                Menunggu Verifikasi
+            @elseif($booking->status == 'confirmed')
+                Dikonfirmasi
+            @else
+                Dibatalkan
+            @endif
         </td>
 
         <td>
