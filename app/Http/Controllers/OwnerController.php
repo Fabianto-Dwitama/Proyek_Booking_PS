@@ -106,7 +106,7 @@ class OwnerController extends Controller
         );
     }
 
-    public function verifyPayment($id)
+    public function verifyPayment(int $id)
     {
         $ownerId = auth()->id();
 
@@ -146,7 +146,10 @@ class OwnerController extends Controller
 
     public function updateProfile(Request $request)
     {
-        auth()->user()->update([
+        /** @var \App\Models\User $user */
+        $user = auth()->user();
+
+        $user->update([
 
             'whatsapp' => $request->whatsapp,
 
