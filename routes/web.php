@@ -21,7 +21,7 @@ use App\Http\Controllers\PaymentController;
 */
 
 Route::get('/', function () {
-    return redirect('/login');
+    return view('/welcome');
 });
 
 Route::get('/dashboard', function () {
