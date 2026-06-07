@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use App\Models\Payment;
 
 class Booking extends Model
 {
@@ -22,31 +23,29 @@ class Booking extends Model
 
     public function getTanggalIndonesiaAttribute()
     {
-    return Carbon::parse($this->tanggal)
-        ->format('d-m-Y');
+        return Carbon::parse(
+            $this->tanggal
+        )->format('d-m-Y');
     }
 
     public function playstation()
     {
         return $this->belongsTo(
-            \App\Models\Playstation::class
+            Playstation::class
         );
     }
 
     public function payment()
     {
-        return $this->hasOne(Payment::class);
+        return $this->hasOne(
+            Payment::class
+        );
     }
 
     public function user()
     {
         return $this->belongsTo(
-            \App\Models\User::class
+            User::class
         );
-    }
-
-    public function owner()
-    {
-        return $this->playstation->owner;
     }
 }

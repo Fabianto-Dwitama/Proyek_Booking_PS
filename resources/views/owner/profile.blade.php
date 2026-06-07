@@ -2,7 +2,7 @@
 
 <x-slot name="header">
     <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        ⚙️ Data Pembayaran Owner
+        🏢 Profil Rental Saya
     </h2>
 </x-slot>
 
@@ -25,17 +25,66 @@
 
         @endif
 
-        <div class="bg-white shadow rounded p-6">
-
-            <h3 class="text-lg font-bold mb-6">
-                Informasi Pembayaran Rental
-            </h3>
+        <div class="bg-white shadow rounded-lg p-6">
 
             <form action="/owner/profile" method="POST">
 
                 @csrf
 
+                <h3 class="text-xl font-bold mb-4">
+                    🏢 Informasi Rental
+                </h3>
+
                 <div class="mb-4">
+
+                    <label class="block font-medium mb-2">
+                        Nama Rental
+                    </label>
+
+                    <input
+                        type="text"
+                        name="nama_rental"
+                        value="{{ $owner->nama_rental }}"
+                        class="w-full border rounded px-3 py-2"
+                    >
+
+                </div>
+
+                <div class="mb-4">
+
+                    <label class="block font-medium mb-2">
+                        Alamat Rental
+                    </label>
+
+                    <textarea
+                        name="alamat_rental"
+                        rows="3"
+                        class="w-full border rounded px-3 py-2"
+                    >{{ $owner->alamat_rental }}</textarea>
+
+                </div>
+
+                <div class="mb-6">
+
+                    <label class="block font-medium mb-2">
+                        Deskripsi Rental
+                    </label>
+
+                    <textarea
+                        name="deskripsi_rental"
+                        rows="3"
+                        class="w-full border rounded px-3 py-2"
+                    >{{ $owner->deskripsi_rental }}</textarea>
+
+                </div>
+
+                <hr class="my-6">
+
+                <h3 class="text-xl font-bold mb-4">
+                    📱 Kontak Owner
+                </h3>
+
+                <div class="mb-6">
 
                     <label class="block font-medium mb-2">
                         Nomor WhatsApp
@@ -45,10 +94,17 @@
                         type="text"
                         name="whatsapp"
                         value="{{ $owner->whatsapp }}"
+                        placeholder="628xxxxxxxxxx"
                         class="w-full border rounded px-3 py-2"
                     >
 
                 </div>
+
+                <hr class="my-6">
+
+                <h3 class="text-xl font-bold mb-4">
+                    💳 Metode Pembayaran
+                </h3>
 
                 <div class="mb-4">
 
@@ -83,7 +139,7 @@
                 <div class="mb-4">
 
                     <label class="block font-medium mb-2">
-                        Nomor DANA
+                        DANA
                     </label>
 
                     <input
@@ -98,7 +154,7 @@
                 <div class="mb-6">
 
                     <label class="block font-medium mb-2">
-                        Nomor GoPay
+                        GoPay
                     </label>
 
                     <input
@@ -112,9 +168,9 @@
 
                 <button
                     type="submit"
-                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded"
                 >
-                    Simpan Data Pembayaran
+                    💾 Simpan Profil Rental
                 </button>
 
             </form>

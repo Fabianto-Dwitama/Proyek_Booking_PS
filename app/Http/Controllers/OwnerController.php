@@ -11,43 +11,19 @@ class OwnerController extends Controller
 {
     public function dashboard()
     {
-        $ownerId = auth()->id();
+        $jumlahPlaystation = Playstation::count();
 
-        $jumlahPlaystation = Playstation::where(
-            'owner_id',
-            $ownerId
-        )->count();
-
-        $jumlahBooking = Booking::whereHas(
-            'playstation',
-            function ($q) use ($ownerId) {
-                $q->where('owner_id', $ownerId);
-            }
-        )->count();
+        $jumlahBooking = Booking::count();
 
         $bookingPending = Booking::where(
             'status',
             'pending'
-        )
-        ->whereHas(
-            'playstation',
-            function ($q) use ($ownerId) {
-                $q->where('owner_id', $ownerId);
-            }
-        )
-        ->count();
+        )->count();
 
         $pendapatan = Payment::where(
             'status',
             'verified'
-        )
-        ->whereHas(
-            'booking.playstation',
-            function ($q) use ($ownerId) {
-                $q->where('owner_id', $ownerId);
-            }
-        )
-        ->sum('nominal');
+        )->sum('nominal');
 
         return view(
             'owner.dashboard',
@@ -62,18 +38,11 @@ class OwnerController extends Controller
 
     public function bookings()
     {
-        $ownerId = auth()->id();
-
         $bookings = Booking::with([
             'user',
-            'playstation'
-        ])
-        ->whereHas(
             'playstation',
-            function ($q) use ($ownerId) {
-                $q->where('owner_id', $ownerId);
-            }
-        )
+            'payment'
+        ])
         ->latest()
         ->get();
 
@@ -85,18 +54,10 @@ class OwnerController extends Controller
 
     public function payments()
     {
-        $ownerId = auth()->id();
-
         $payments = Payment::with([
             'booking.user',
             'booking.playstation'
         ])
-        ->whereHas(
-            'booking.playstation',
-            function ($q) use ($ownerId) {
-                $q->where('owner_id', $ownerId);
-            }
-        )
         ->latest()
         ->get();
 
@@ -108,29 +69,45 @@ class OwnerController extends Controller
 
     public function verifyPayment($id)
     {
-        $ownerId = auth()->id();
-
-        $payment = Payment::whereHas(
-            'booking.playstation',
-            function ($q) use ($ownerId) {
-                $q->where('owner_id', $ownerId);
-            }
-        )->findOrFail($id);
+        $payment = Payment::findOrFail($id);
 
         $payment->update([
             'status' => 'verified'
         ]);
 
-        Booking::where(
-            'id',
-            $payment->booking_id
-        )->update([
-            'status' => 'confirmed'
-        ]);
+        if ($payment->booking) {
+
+            $payment->booking->update([
+                'status' => 'confirmed'
+            ]);
+
+        }
 
         return back()->with(
             'success',
             'Pembayaran berhasil diverifikasi'
+        );
+    }
+
+    public function rejectPayment($id)
+    {
+        $payment = Payment::findOrFail($id);
+
+        $payment->update([
+            'status' => 'rejected'
+        ]);
+
+        if ($payment->booking) {
+
+            $payment->booking->update([
+                'status' => 'pending'
+            ]);
+
+        }
+
+        return back()->with(
+            'success',
+            'Pembayaran berhasil ditolak'
         );
     }
 
@@ -146,23 +123,31 @@ class OwnerController extends Controller
 
     public function updateProfile(Request $request)
     {
+        $request->validate([
+            'nama_rental' => 'nullable|string|max:255',
+            'alamat_rental' => 'nullable|string',
+            'deskripsi_rental' => 'nullable|string',
+            'whatsapp' => 'nullable|string|max:20',
+            'rekening_bca' => 'nullable|string|max:255',
+            'rekening_bni' => 'nullable|string|max:255',
+            'dana' => 'nullable|string|max:255',
+            'gopay' => 'nullable|string|max:255',
+        ]);
+
         auth()->user()->update([
-
+            'nama_rental' => $request->nama_rental,
+            'alamat_rental' => $request->alamat_rental,
+            'deskripsi_rental' => $request->deskripsi_rental,
             'whatsapp' => $request->whatsapp,
-
             'rekening_bca' => $request->rekening_bca,
-
             'rekening_bni' => $request->rekening_bni,
-
             'dana' => $request->dana,
-
             'gopay' => $request->gopay,
-
         ]);
 
         return back()->with(
             'success',
-            'Data pembayaran berhasil diperbarui'
+            'Profil rental berhasil diperbarui'
         );
     }
 }

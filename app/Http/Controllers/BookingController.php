@@ -13,10 +13,15 @@ class BookingController extends Controller
      */
     public function index()
     {
-        $bookings = Booking::where(
+        $bookings = Booking::with([
+            'playstation',
+            'payment'
+        ])
+        ->where(
             'user_id',
             auth()->id()
-        )->get();
+        )
+        ->get();
 
         return view(
             'pembeli.bookings.index',

@@ -1,43 +1,82 @@
 <x-app-layout>
 
 <x-slot name="header">
-    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+    <h2 class="font-semibold text-2xl text-gray-800 leading-tight">
         📅 Data Booking
     </h2>
 </x-slot>
 
 <div class="py-6">
 
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+<div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-        <!-- Tombol Kembali -->
-        <a
-            href="/owner/dashboard"
-            class="inline-block mb-4 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-        >
-            ← Kembali ke Dashboard
-        </a>
+    <a
+        href="/owner/dashboard"
+        class="inline-block mb-4 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg"
+    >
+        ← Kembali ke Dashboard
+    </a>
 
-        <!-- Card -->
-        <div class="bg-white shadow rounded overflow-hidden">
+    @if(session('success'))
+        <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">
+            {{ session('success') }}
+        </div>
+    @endif
 
-            <div class="p-4 border-b">
-                <h3 class="text-lg font-bold">
-                    Daftar Booking Playstation
-                </h3>
-            </div>
+    <div class="bg-white shadow-lg rounded-2xl overflow-hidden">
+
+        <div class="p-6 border-b">
+
+            <h3 class="text-xl font-bold">
+                Daftar Booking
+            </h3>
+
+            <p class="text-gray-500 text-sm mt-1">
+                Total Booking: {{ $bookings->count() }}
+            </p>
+
+        </div>
+
+        <div class="overflow-x-auto">
 
             <table class="min-w-full">
 
                 <thead class="bg-gray-100">
 
                     <tr>
-                        <th class="px-4 py-3 text-left">No</th>
-                        <th class="px-4 py-3 text-left">Tanggal</th>
-                        <th class="px-4 py-3 text-left">Jam</th>
-                        <th class="px-4 py-3 text-left">Durasi</th>
-                        <th class="px-4 py-3 text-left">Total</th>
-                        <th class="px-4 py-3 text-left">Status</th>
+
+                        <th class="px-4 py-3 text-left">
+                            ID
+                        </th>
+
+                        <th class="px-4 py-3 text-left">
+                            Pembeli
+                        </th>
+
+                        <th class="px-4 py-3 text-left">
+                            Playstation
+                        </th>
+
+                        <th class="px-4 py-3 text-left">
+                            Tanggal
+                        </th>
+
+                        <th class="px-4 py-3 text-left">
+                            Jam
+                        </th>
+
+                        <th class="px-4 py-3 text-left">
+                            Durasi
+                        </th>
+
+                        <th class="px-4 py-3 text-left">
+                            Total
+                        </th>
+
+                        <th class="px-4 py-3 text-left">
+                            Status
+                        </th>
+
                     </tr>
 
                 </thead>
@@ -46,14 +85,22 @@
 
                     @forelse($bookings as $booking)
 
-                        <tr class="border-b">
+                        <tr class="border-b hover:bg-gray-50">
 
                             <td class="px-4 py-3">
-                                {{ $loop->iteration }}
+                                #{{ $booking->id }}
+                            </td>
+
+                            <td class="px-4 py-3 font-medium">
+                                {{ $booking->user->name ?? '-' }}
                             </td>
 
                             <td class="px-4 py-3">
-                                {{ $booking->tanggal }}
+                                {{ $booking->playstation->nomor_ps ?? '-' }}
+                            </td>
+
+                            <td class="px-4 py-3">
+                                {{ \Carbon\Carbon::parse($booking->tanggal)->format('d-m-Y') }}
                             </td>
 
                             <td class="px-4 py-3">
@@ -64,8 +111,8 @@
                                 {{ $booking->durasi }} Jam
                             </td>
 
-                            <td class="px-4 py-3">
-                                Rp {{ number_format($booking->total_harga, 0, ',', '.') }}
+                            <td class="px-4 py-3 font-semibold text-green-600">
+                                Rp {{ number_format($booking->total_harga,0,',','.') }}
                             </td>
 
                             <td class="px-4 py-3">
@@ -79,13 +126,13 @@
                                 @elseif($booking->status == 'confirmed')
 
                                     <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
-                                        Confirmed
+                                        Dikonfirmasi
                                     </span>
 
                                 @else
 
                                     <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm">
-                                        Cancelled
+                                        Ditolak
                                     </span>
 
                                 @endif
@@ -97,9 +144,11 @@
                     @empty
 
                         <tr>
-                            <td colspan="6" class="text-center py-6 text-gray-500">
-                                Belum ada data booking
+
+                            <td colspan="8" class="text-center py-8 text-gray-500">
+                                Belum ada booking
                             </td>
+
                         </tr>
 
                     @endforelse
@@ -111,6 +160,9 @@
         </div>
 
     </div>
+
+</div>
+
 
 </div>
 

@@ -10,11 +10,8 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
 
-            $table->string('nama_rental')->nullable();
+            //
 
-            $table->string('no_whatsapp')->nullable();
-
-            $table->text('deskripsi_rental')->nullable();
         });
     }
 
@@ -23,9 +20,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
 
             $table->dropColumn([
-                'nama_rental',
-                'no_whatsapp',
-                'deskripsi_rental'
+                //
             ]);
 
         });

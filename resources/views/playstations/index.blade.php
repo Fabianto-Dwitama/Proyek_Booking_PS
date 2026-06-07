@@ -1,40 +1,77 @@
 <x-app-layout>
 
 <x-slot name="header">
-    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+    <h2 class="font-semibold text-2xl text-gray-800 leading-tight">
         🎮 Kelola Playstation
     </h2>
 </x-slot>
 
 <div class="py-6">
+
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-        <!-- Tombol Kembali -->
-        <a
-            href="/owner/dashboard"
-            class="inline-block mb-4 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-        >
-            ← Kembali ke Dashboard
-        </a>
-
-        <!-- Notifikasi -->
         @if(session('success'))
-            <div class="mb-4 p-4 bg-green-100 text-green-700 rounded">
+
+            <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">
                 {{ session('success') }}
             </div>
+
         @endif
 
-        <!-- Form Tambah PS -->
-        <div class="bg-white shadow rounded p-6 mb-6">
+        <!-- Statistik -->
 
-            <h3 class="text-lg font-bold mb-4">
-                Tambah Playstation
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+
+            <div class="bg-white shadow rounded-lg p-6">
+
+                <p class="text-gray-500">
+                    Total Playstation
+                </p>
+
+                <h3 class="text-4xl font-bold text-blue-600 mt-2">
+                    {{ $playstations->count() }}
+                </h3>
+
+            </div>
+
+            <div class="bg-white shadow rounded-lg p-6">
+
+                <p class="text-gray-500">
+                    Tersedia
+                </p>
+
+                <h3 class="text-4xl font-bold text-green-600 mt-2">
+                    {{ $playstations->where('status','tersedia')->count() }}
+                </h3>
+
+            </div>
+
+            <div class="bg-white shadow rounded-lg p-6">
+
+                <p class="text-gray-500">
+                    Tidak Tersedia
+                </p>
+
+                <h3 class="text-4xl font-bold text-red-600 mt-2">
+                    {{ $playstations->where('status','!=','tersedia')->count() }}
+                </h3>
+
+            </div>
+
+        </div>
+
+        <!-- Form Tambah -->
+
+        <div class="bg-white shadow rounded-lg p-6 mb-6">
+
+            <h3 class="text-xl font-bold mb-4">
+                ➕ Tambah Playstation
             </h3>
 
             <form
                 action="{{ route('playstations.store') }}"
                 method="POST"
-                class="grid grid-cols-1 md:grid-cols-4 gap-4"
+                class="grid md:grid-cols-4 gap-4"
             >
                 @csrf
 
@@ -43,165 +80,129 @@
                     name="nomor_ps"
                     placeholder="Nomor PS"
                     required
-                    class="border rounded px-3 py-2"
+                    class="border rounded-lg px-3 py-2"
                 >
 
                 <input
                     type="text"
                     name="tipe_ps"
-                    placeholder="Tipe PS"
+                    placeholder="PS4 / PS5"
                     required
-                    class="border rounded px-3 py-2"
+                    class="border rounded-lg px-3 py-2"
                 >
 
                 <input
                     type="number"
                     name="harga_per_jam"
-                    placeholder="Harga per Jam"
+                    placeholder="Harga per jam"
                     required
-                    class="border rounded px-3 py-2"
+                    class="border rounded-lg px-3 py-2"
                 >
 
                 <button
                     type="submit"
-                    class="bg-blue-600 hover:bg-blue-700 text-white rounded px-4 py-2"
+                    class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-4 py-2"
                 >
-                    Tambah
+                    Simpan
                 </button>
 
             </form>
 
         </div>
 
-        <!-- Tabel Playstation -->
-        <div class="bg-white shadow rounded overflow-hidden">
+        <!-- Daftar PS -->
 
-            <div class="p-4 border-b flex justify-between items-center">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-                <div>
-                    <h3 class="text-lg font-bold">
-                        Daftar Playstation Saya
-                    </h3>
+            @forelse($playstations as $ps)
 
-                    <p class="text-gray-500 text-sm">
-                        Total PS : {{ $playstations->count() }}
-                    </p>
+                <div class="bg-white shadow rounded-lg p-6">
+
+                    <div class="flex justify-between items-center mb-4">
+
+                        <h3 class="text-xl font-bold">
+                            {{ $ps->nomor_ps }}
+                        </h3>
+
+                        @if($ps->status == 'tersedia')
+
+                            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
+                                Tersedia
+                            </span>
+
+                        @else
+
+                            <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm">
+                                Dipakai
+                            </span>
+
+                        @endif
+
+                    </div>
+
+                    <div class="space-y-2">
+
+                        <p>
+                            <strong>Tipe:</strong>
+                            {{ $ps->tipe_ps }}
+                        </p>
+
+                        <p>
+                            <strong>Harga:</strong>
+                            Rp {{ number_format($ps->harga_per_jam,0,',','.') }}/jam
+                        </p>
+
+                    </div>
+
+                    <div class="flex gap-2 mt-5">
+
+                        <a
+                            href="{{ route('playstations.edit', $ps->id) }}"
+                            class="flex-1 text-center bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded"
+                        >
+                            Edit
+                        </a>
+
+                        <form
+                            action="{{ route('playstations.destroy', $ps->id) }}"
+                            method="POST"
+                            class="flex-1"
+                        >
+                            @csrf
+                            @method('DELETE')
+
+                            <button
+                                type="submit"
+                                onclick="return confirm('Yakin ingin menghapus Playstation ini?')"
+                                class="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded"
+                            >
+                                Hapus
+                            </button>
+
+                        </form>
+
+                    </div>
+
                 </div>
 
-            </div>
+            @empty
 
-            <table class="min-w-full">
+                <div class="col-span-3">
 
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="px-4 py-3 text-left">No</th>
-                        <th class="px-4 py-3 text-left">Nomor PS</th>
-                        <th class="px-4 py-3 text-left">Tipe</th>
-                        <th class="px-4 py-3 text-left">Harga/Jam</th>
-                        <th class="px-4 py-3 text-left">Status</th>
-                        <th class="px-4 py-3 text-center">Aksi</th>
-                    </tr>
-                </thead>
+                    <div class="bg-white shadow rounded-lg p-8 text-center text-gray-500">
 
-                <tbody>
+                        Belum ada Playstation.
 
-                    @forelse($playstations as $ps)
+                    </div>
 
-                        <tr class="border-b hover:bg-gray-50">
+                </div>
 
-                            <td class="px-4 py-3">
-                                {{ $loop->iteration }}
-                            </td>
-
-                            <td class="px-4 py-3 font-medium">
-                                {{ $ps->nomor_ps }}
-                            </td>
-
-                            <td class="px-4 py-3">
-                                {{ $ps->tipe_ps }}
-                            </td>
-
-                            <td class="px-4 py-3 font-semibold text-green-600">
-                                Rp {{ number_format($ps->harga_per_jam, 0, ',', '.') }}
-                            </td>
-
-                            <td class="px-4 py-3">
-
-                                @if($ps->status == 'tersedia')
-
-                                    <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
-                                        Tersedia
-                                    </span>
-
-                                @else
-
-                                    <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm">
-                                        Dipakai
-                                    </span>
-
-                                @endif
-
-                            </td>
-
-                            <td class="px-4 py-3 text-center">
-
-                                <a
-                                    href="{{ route('playstations.edit', $ps->id) }}"
-                                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded"
-                                >
-                                    Edit
-                                </a>
-
-                                <form
-                                    action="{{ route('playstations.destroy', $ps->id) }}"
-                                    method="POST"
-                                    class="inline"
-                                >
-                                    @csrf
-                                    @method('DELETE')
-
-                                    <button
-                                        type="submit"
-                                        onclick="return confirm('Yakin ingin menghapus Playstation ini?')"
-                                        class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
-                                    >
-                                        Hapus
-                                    </button>
-                                </form>
-
-                            </td>
-
-                        </tr>
-
-                    @empty
-
-                        <tr>
-
-                            <td colspan="6" class="text-center py-8 text-gray-500">
-
-                                <div class="flex flex-col items-center">
-
-                                    <div class="text-5xl mb-2">
-                                        🎮
-                                    </div>
-
-                                    <div>
-                                        Belum ada Playstation yang ditambahkan
-                                    </div>
-
-                                </div>
-
-                            </td>
-
-                        </tr>
-
-                    @endforelse
-
-                </tbody>
-
-            </table>
+            @endforelse
 
         </div>
+
     </div>
+
 </div>
+
 </x-app-layout>

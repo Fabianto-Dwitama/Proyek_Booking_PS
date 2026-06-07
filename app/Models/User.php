@@ -27,7 +27,11 @@ class User extends Authenticatable
         'rekening_bca',
         'rekening_bni',
         'dana',
-        'gopay'
+        'gopay',
+
+        'nama_rental',
+        'alamat_rental',
+        'deskripsi_rental',
     ];
 
     /**

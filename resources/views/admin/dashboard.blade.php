@@ -1,7 +1,7 @@
 <x-app-layout>
 
 <x-slot name="header">
-    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+    <h2 class="font-semibold text-2xl text-gray-800 leading-tight">
         📊 Dashboard Admin
     </h2>
 </x-slot>
@@ -10,107 +10,124 @@
 
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-        <!-- Welcome Card -->
-        <div class="bg-white shadow rounded p-6 mb-6">
+        <!-- Header -->
 
-            <h3 class="text-2xl font-bold mb-2">
-                Selamat Datang Admin 👋
-            </h3>
+        <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-8 mb-6">
 
-            <p class="text-gray-600">
-                Monitoring sistem Booking Rental Playstation.
+            <h1 class="text-3xl font-bold">
+                Dashboard Administrator
+            </h1>
+
+            <p class="mt-2 text-slate-200">
+                Monitoring seluruh aktivitas Rental Playstation.
             </p>
 
         </div>
 
         <!-- Statistik -->
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
 
-            <div class="bg-white shadow rounded p-6">
+            <div class="bg-white rounded-xl shadow p-6">
 
-                <h4 class="text-gray-500 text-sm uppercase">
+                <p class="text-gray-500 text-sm">
                     Total User
-                </h4>
+                </p>
 
-                <p class="text-4xl font-bold text-blue-600 mt-2">
+                <h3 class="text-4xl font-bold text-blue-600 mt-2">
                     {{ $jumlahUser }}
-                </p>
+                </h3>
 
             </div>
 
-            <div class="bg-white shadow rounded p-6">
+            <div class="bg-white rounded-xl shadow p-6">
 
-                <h4 class="text-gray-500 text-sm uppercase">
-                    Total Owner
-                </h4>
-
-                <p class="text-4xl font-bold text-green-600 mt-2">
-                    {{ $jumlahOwner }}
+                <p class="text-gray-500 text-sm">
+                    Total Playstation
                 </p>
+
+                <h3 class="text-4xl font-bold text-green-600 mt-2">
+                    {{ $jumlahPlaystation }}
+                </h3>
 
             </div>
 
-            <div class="bg-white shadow rounded p-6">
+            <div class="bg-white rounded-xl shadow p-6">
 
-                <h4 class="text-gray-500 text-sm uppercase">
+                <p class="text-gray-500 text-sm">
                     Total Booking
-                </h4>
-
-                <p class="text-4xl font-bold text-yellow-600 mt-2">
-                    {{ $jumlahBooking }}
                 </p>
+
+                <h3 class="text-4xl font-bold text-yellow-500 mt-2">
+                    {{ $jumlahBooking }}
+                </h3>
 
             </div>
 
-            <div class="bg-white shadow rounded p-6">
+            <div class="bg-white rounded-xl shadow p-6">
 
-                <h4 class="text-gray-500 text-sm uppercase">
-                    Total Payment
-                </h4>
-
-                <p class="text-4xl font-bold text-purple-600 mt-2">
-                    {{ $jumlahPayment }}
+                <p class="text-gray-500 text-sm">
+                    Total Transaksi
                 </p>
+
+                <h3 class="text-4xl font-bold text-purple-600 mt-2">
+                    {{ $jumlahPayment }}
+                </h3>
 
             </div>
 
         </div>
 
-        <!-- Menu Admin -->
-        <div class="bg-white shadow rounded p-6">
+        <!-- Pendapatan -->
 
-            <h3 class="text-lg font-bold mb-4">
-                Menu Admin
+        <div class="bg-white rounded-xl shadow p-6 mb-6">
+
+            <h3 class="text-lg font-bold text-gray-700">
+                💰 Total Pendapatan Rental
             </h3>
 
-            <div class="flex flex-wrap gap-3">
+            <p class="text-4xl font-bold text-green-600 mt-3">
+                Rp {{ number_format($pendapatan,0,',','.') }}
+            </p>
+
+        </div>
+
+        <!-- Menu -->
+
+        <div class="bg-white rounded-xl shadow p-6">
+
+            <h3 class="text-xl font-bold mb-5">
+                🚀 Menu Administrator
+            </h3>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
 
                 <a
                     href="/admin/users"
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded"
+                    class="bg-blue-600 hover:bg-blue-700 text-white text-center py-4 rounded-lg font-semibold"
                 >
                     👥 Kelola User
                 </a>
 
                 <a
-                    href="/admin/owners"
-                    class="bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded"
-                >
-                    🏢 Kelola Owner
-                </a>
-
-                <a
                     href="/admin/bookings"
-                    class="bg-yellow-600 hover:bg-yellow-700 text-white px-5 py-3 rounded"
+                    class="bg-yellow-500 hover:bg-yellow-600 text-white text-center py-4 rounded-lg font-semibold"
                 >
                     📅 Data Booking
                 </a>
 
                 <a
                     href="/admin/transactions"
-                    class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-3 rounded"
+                    class="bg-purple-600 hover:bg-purple-700 text-white text-center py-4 rounded-lg font-semibold"
                 >
-                    💳 Laporan Transaksi
+                    💳 Transaksi
+                </a>
+
+                <a
+                    href="/owner/profile"
+                    class="bg-green-600 hover:bg-green-700 text-white text-center py-4 rounded-lg font-semibold"
+                >
+                    🏢 Profil Rental
                 </a>
 
             </div>

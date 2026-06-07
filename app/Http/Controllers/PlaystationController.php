@@ -28,7 +28,6 @@ class PlaystationController extends Controller
     public function store(Request $request)
     {
         Playstation::create([
-            'owner_id' => auth()->id(),
             'nomor_ps' => $request->nomor_ps,
             'tipe_ps' => $request->tipe_ps,
             'harga_per_jam' => $request->harga_per_jam,
