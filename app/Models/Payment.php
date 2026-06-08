@@ -10,9 +10,23 @@ class Payment extends Model
     use HasFactory;
 
     protected $fillable = [
+
         'booking_id',
+
         'metode',
+
+        'nominal',
+
         'bukti_transfer',
+
         'status',
+
     ];
+
+    public function booking()
+    {
+        return $this->belongsTo(
+            Booking::class
+        );
+    }
 }

@@ -15,4 +15,7 @@ class Playstation extends Model
         'harga_per_jam',
         'status',
     ];
+
+
 }
+

@@ -13,10 +13,15 @@ class BookingController extends Controller
      */
     public function index()
     {
-        $bookings = Booking::where(
+        $bookings = Booking::with([
+            'playstation',
+            'payment'
+        ])
+        ->where(
             'user_id',
             auth()->id()
-        )->get();
+        )
+        ->get();
 
         return view(
             'pembeli.bookings.index',
@@ -53,13 +58,43 @@ class BookingController extends Controller
 
         $total = $request->durasi * $playstation->harga_per_jam;
 
-        $existing = Booking::where('playstation_id', $request->playstation_id)
-        ->where('tanggal', $request->tanggal)
-        ->where('jam_mulai', $request->jam_mulai)
-        ->exists();
+        $jamMulaiBaru = strtotime($request->jam_mulai);
 
-        if($existing){
-            return back()->with('error', 'Jadwal sudah dibooking');
+        $jamSelesaiBaru = strtotime(
+            $request->jam_mulai
+        ) + ($request->durasi * 3600);
+
+        $bookings = Booking::where(
+            'playstation_id',
+            $request->playstation_id
+        )
+        ->where(
+            'tanggal',
+            $request->tanggal
+        )
+        ->get();
+
+        foreach ($bookings as $booking) {
+
+            $jamMulaiLama = strtotime(
+                $booking->jam_mulai
+            );
+
+            $jamSelesaiLama = strtotime(
+                $booking->jam_mulai
+            ) + ($booking->durasi * 3600);
+
+            if (
+                $jamMulaiBaru < $jamSelesaiLama &&
+                $jamSelesaiBaru > $jamMulaiLama
+            ) {
+                return back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'Playstation sudah dibooking pada jam tersebut'
+                    );
+            }
         }
 
         Booking::create([
