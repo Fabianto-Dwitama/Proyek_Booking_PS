@@ -9,13 +9,27 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('rentals', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+  public function up(): void
+{
+    Schema::create('rentals', function (Blueprint $table) {
+
+        $table->id();
+
+        $table->foreignId('owner_id')
+              ->constrained('users')
+              ->onDelete('cascade');
+
+        $table->string('nama_rental');
+
+        $table->text('alamat');
+
+        $table->time('jam_buka');
+
+        $table->time('jam_tutup');
+
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.
