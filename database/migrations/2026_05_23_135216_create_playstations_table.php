@@ -12,7 +12,20 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('playstations', function (Blueprint $table) {
+            
             $table->id();
+
+            $table->string('nomor_ps');
+
+            $table->string('tipe_ps');
+
+            $table->decimal('harga_per_jam', 10, 2);
+
+            $table->enum('status', [
+                'tersedia',
+                'maintenance'
+            ])->default('tersedia');
+
             $table->timestamps();
         });
     }

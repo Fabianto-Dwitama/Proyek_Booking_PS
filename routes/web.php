@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\PembeliController;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\PlaystationController;
+use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,7 +53,8 @@ Route::middleware(['auth', 'role:owner'])
 
     Route::get('/dashboard',
         [OwnerController::class, 'dashboard']);
-
+    
+    Route::resource('playstations', PlaystationController::class);
 });
 
 Route::middleware(['auth', 'role:pembeli'])
@@ -59,6 +63,9 @@ Route::middleware(['auth', 'role:pembeli'])
 
     Route::get('/dashboard',
         [PembeliController::class, 'dashboard']);
+    
+    Route::resource('bookings', BookingController::class);
+    Route::resource('payments', PaymentController::class);
 
 });
 
