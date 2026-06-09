@@ -1,0 +1,16 @@
+*   [33m4d4e685[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mexperimen[m[33m)[m WIP: dashboard UI update
+[31m|[m[32m\[m  
+* [32m|[m [33m8093343[m uidashboard1
+[32m|[m [32m|[m * [33md30be6f[m[33m ([m[1;31morigin/fitur-admin[m[33m)[m Single owner
+[32m|[m [32m|[m [33m|[m * [33m8fa6aca[m[33m ([m[1;31morigin/Experimen[m[33m)[m Fix migration duplication  and fix  public landing page route
+[32m|[m [32m|[m [33m|[m * [33mc7c69a7[m Fix bug sementara
+[32m|[m [32m|[m [33m|[m[33m/[m  
+[32m|[m [32m|[m * [33m53ce79c[m sistem sedikit lagi
+[32m|[m [32m|[m * [33md8af368[m Menambahkan fitur admin dan verifikasi pembayaran owner
+[32m|[m [32m|[m[32m/[m  
+[32m|[m *   [33m93fe633[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge pull request #1 from Fabianto-Dwitama/feature/booking-system
+[32m|[m [35m|[m[36m\[m  
+[32m|[m [35m|[m * [33m60086fc[m[33m ([m[1;31morigin/feature/booking-system[m[33m)[m Complete booking, payment and dashboard features
+[32m|[m [35m|[m[35m/[m  
+[32m|[m * [33md2760a3[m Membuat booking system dan payment
+[32m|[m[32m/[m  

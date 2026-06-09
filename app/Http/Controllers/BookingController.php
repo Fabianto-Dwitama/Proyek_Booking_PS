@@ -38,6 +38,24 @@ class BookingController extends Controller
     }
 
     /**
+     * Public guest booking form (no login required)
+     */
+    public function createGuest()
+    {
+        $dbError = false;
+        try {
+            $playstations = Playstation::all();
+        } catch (\Throwable $e) {
+            // silent fail, inform view that DB is down
+            \Log::error('BookingController::createGuest - Error: ' . $e->getMessage());
+            $playstations = collect();
+            $dbError = true;
+        }
+
+        return view('pembeli.bookings.guest_create', compact('playstations', 'dbError'));
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -78,6 +96,53 @@ class BookingController extends Controller
                 'success',
                 'Booking berhasil dibuat'
             );
+    }
+
+    /**
+     * Store booking from guest (no login required)
+     */
+    public function storeGuest(Request $request)
+    {
+        $request->validate([
+            'playstation_id' => 'required',
+            'tanggal' => 'required|date',
+            'jam_mulai' => 'required',
+            'durasi' => 'required|integer|min:1',
+            'guest_name' => 'required|string|max:255',
+            'guest_phone' => 'nullable|string|max:50'
+        ]);
+
+        try {
+            $playstation = Playstation::findOrFail($request->playstation_id);
+
+            $total = $request->durasi * $playstation->harga_per_jam;
+
+            $existing = Booking::where('playstation_id', $request->playstation_id)
+                ->where('tanggal', $request->tanggal)
+                ->where('jam_mulai', $request->jam_mulai)
+                ->exists();
+
+            if ($existing) {
+                return back()->with('error', 'Jadwal sudah dibooking')->withInput();
+            }
+        } catch (\Throwable $e) {
+            return back()->with('error', 'Tidak dapat memproses booking karena masalah koneksi database.')->withInput();
+        }
+
+        Booking::create([
+            'user_id' => auth()->check() ? auth()->id() : null,
+            'guest_name' => $request->guest_name,
+            'guest_phone' => $request->guest_phone,
+            'playstation_id' => $request->playstation_id,
+            'tanggal' => $request->tanggal,
+            'jam_mulai' => $request->jam_mulai,
+            'durasi' => $request->durasi,
+            'total_harga' => $total,
+            'status' => 'pending'
+        ]);
+
+        return redirect()->route('booking.guest.create')
+            ->with('success', 'Booking berhasil dibuat. Silakan tunggu konfirmasi dari admin.');
     }
 
     /**
