@@ -1,64 +1,66 @@
-<a
-    href="{{ route('bookings.index') }}"
-    style="
-        background:#6b7280;
-        color:white;
-        padding:8px 12px;
-        text-decoration:none;
-        border-radius:4px;
-    "
->
-    ← Kembali ke Booking Saya
-</a>
+@extends('layouts.app')
 
-<br><br>
+@section('content')
 
-<h1>Upload Bukti Pembayaran</h1>
+<div class="py-6">
+    <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
 
-@if(session('success'))
-    <p style="color:green;">
-        {{ session('success') }}
-    </p>
-@endif
+        <div class="bg-white shadow rounded-lg p-6">
 
-<form
-    action="{{ route('payments.store') }}"
-    method="POST"
-    enctype="multipart/form-data"
->
-    @csrf
+            <h2 class="text-2xl font-bold mb-6">
+                Pembayaran Booking
+            </h2>
 
-    <p>
-        Booking ID:
-        <input
-            type="number"
-            name="booking_id"
-            value="{{ $booking_id }}"
-            readonly
-        >
-    </p>
+            <div class="space-y-3">
 
-    <p>
-        Metode Pembayaran:
-        <input
-            type="text"
-            name="metode"
-            placeholder="Transfer BCA"
-            required
-        >
-    </p>
+                <p>
+                    <strong>ID Booking:</strong>
+                    {{ $booking->id }}
+                </p>
 
-    <p>
-        Bukti Transfer:
-        <input
-            type="file"
-            name="bukti_transfer"
-            required
-        >
-    </p>
+                <p>
+                    <strong>Tanggal:</strong>
+                    {{ $booking->tanggal }}
+                </p>
 
-    <button type="submit">
-        Upload Bukti
-    </button>
+                <p>
+                    <strong>Jam Mulai:</strong>
+                    {{ $booking->jam_mulai }}
+                </p>
 
-</form>
+                <p>
+                    <strong>Durasi:</strong>
+                    {{ $booking->durasi }} Jam
+                </p>
+
+                <p>
+                    <strong>Total:</strong>
+                    Rp {{ number_format($booking->total_harga, 0, ',', '.') }}
+                </p>
+
+            </div>
+
+            <hr class="my-6">
+
+            <form action="{{ route('payments.store') }}" method="POST">
+                @csrf
+
+                <input
+                    type="hidden"
+                    name="booking_id"
+                    value="{{ $booking->id }}"
+                >
+
+                <button
+                    type="submit"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded"
+                >
+                    Bayar dengan Midtrans
+                </button>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@endsection

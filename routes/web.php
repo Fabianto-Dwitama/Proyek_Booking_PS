@@ -8,6 +8,7 @@ use App\Http\Controllers\PembeliController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\PlaystationController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\MidtransCallbackController;
 
 /*
 |--------------------------------------------------------------------------
@@ -85,5 +86,9 @@ Route::middleware(['auth', 'role:pembeli'])
         Route::resource('payments', PaymentController::class);
 });
 
+Route::post(
+    '/midtrans/callback',
+    [MidtransCallbackController::class, 'handle']
+);
 
 require __DIR__.'/auth.php';
