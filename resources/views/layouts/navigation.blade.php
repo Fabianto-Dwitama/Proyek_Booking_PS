@@ -13,15 +13,15 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     @auth
-                        @if(Auth::user()->role == 'admin')
+                        @role('admin')
                             <x-nav-link
                                 :href="url('/admin/dashboard')"
                                 :active="request()->is('admin/dashboard')">
                                 Dashboard
                             </x-nav-link>
-                        @endif
+                        @endrole
 
-                        @if(Auth::user()->role == 'owner')
+                        @role('owner')
                             <x-nav-link
                                 :href="url('/owner/dashboard')"
                                 :active="request()->is('owner/dashboard')">
@@ -29,9 +29,9 @@
                             </x-nav-link>
 
                             <x-nav-link :href="route('playstations.index')">Playstation</x-nav-link>
-                        @endif
+                        @endrole
 
-                        @if(Auth::user()->role == 'pembeli')
+                        @role('pembeli')
                             <x-nav-link
                                 :href="url('/pembeli/dashboard')"
                                 :active="request()->is('pembeli/dashboard')">
@@ -40,7 +40,7 @@
 
                             <x-nav-link :href="route('bookings.create')">Booking</x-nav-link>
                             <x-nav-link :href="route('bookings.index')">Booking Saya</x-nav-link>
-                        @endif
+                        @endrole
                     @else
                         <x-nav-link :href="url('/')">Beranda</x-nav-link>
                         <x-nav-link :href="route('booking.guest.create')">Booking Sekarang</x-nav-link>
@@ -81,7 +81,7 @@
                         <a href="{{ route('login') }}" class="text-sm text-gray-700">Login</a>
                         @if (Route::has('register'))
                             <a href="{{ route('register') }}" class="text-sm text-gray-700">Register</a>
-                        @endif
+                        @endrole
                     </div>
                 @endauth
             </div>
@@ -102,20 +102,20 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             @auth
-                @if(Auth::user()->role == 'owner')
+                @role('owner')
                     <x-responsive-nav-link :href="url('/owner/dashboard')">Dashboard</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('playstations.index')">Playstation</x-responsive-nav-link>
-                @endif
+                @endrole
 
-                @if(Auth::user()->role == 'pembeli')
+                @role('pembeli')
                     <x-responsive-nav-link :href="url('/pembeli/dashboard')">Dashboard</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('bookings.create')">Booking</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('bookings.index')">Booking Saya</x-responsive-nav-link>
-                @endif
+                @endrole
 
-                @if(Auth::user()->role == 'admin')
+                @role('admin')
                     <x-responsive-nav-link :href="url('/admin/dashboard')">Dashboard</x-responsive-nav-link>
-                @endif
+                @endrole
             @else
                 <x-responsive-nav-link :href="url('/')">Beranda</x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('booking.guest.create')">Booking Sekarang</x-responsive-nav-link>
@@ -146,7 +146,7 @@
                 <a href="{{ route('login') }}" class="block text-sm text-gray-700">Login</a>
                 @if (Route::has('register'))
                     <a href="{{ route('register') }}" class="block text-sm text-gray-700 mt-1">Register</a>
-                @endif
+                @endrole
             </div>
             @endauth
         </div>

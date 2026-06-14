@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 @extends('layouts.admin')
 
 @section('content')
@@ -241,7 +240,6 @@
             </div>
 
         </div>
-<<<<<<< HEAD
 
     </div>
 
@@ -251,4 +249,3 @@
 =======
     </div>
 </x-app-layout>
->>>>>>> 93fe63300221a71f78a109423f62e7992856f6c8

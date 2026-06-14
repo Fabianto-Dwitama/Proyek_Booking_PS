@@ -21,7 +21,7 @@
     <p style="color:green;">
         {{ session('success') }}
     </p>
-@endif
+@endrole
 
 <h3>Tambah Playstation</h3>
 

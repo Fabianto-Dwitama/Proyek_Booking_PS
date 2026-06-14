@@ -25,7 +25,7 @@
                         {{ $header }}
                     </div>
                 </header>
-            @endif
+            @endrole
 
             <!-- Page Content -->
             <main>

@@ -27,7 +27,7 @@
 
     </div>
 
-@endif
+@endrole
 
 <form action="{{ route('bookings.store') }}" method="POST">
     @csrf

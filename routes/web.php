@@ -41,26 +41,43 @@ Route::middleware('auth')->group(function () {
         ->name('profile.destroy');
 });
 
-
 // ADMIN
-Route::middleware(['auth', 'role:admin'])
-    ->prefix('admin')
-    ->group(function () {
+Route::middleware([
+    'auth', 
+    'role:admin'
+    
+])
+->prefix('admin')
+->group(function () {
 
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])
-            ->name('admin.dashboard');
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])
+        ->name('admin.dashboard');
+
+    Route::get(
+        '/reports',
+        [AdminController::class, 'reports']
+    )->middleware(
+        'permission:view reports'
+    )->name('admin.reports');
 });
 
-
 // OWNER
-Route::middleware(['auth', 'role:owner'])
-    ->prefix('owner')
-    ->group(function () {
+Route::middleware([
+    'auth',
+    'role:owner'
+])
+->prefix('owner')
+->group(function () {
 
-        Route::get('/dashboard', [OwnerController::class, 'dashboard'])
-            ->name('owner.dashboard');
+    Route::get('/dashboard', [OwnerController::class, 'dashboard'])
+        ->name('owner.dashboard');
 
-        Route::resource('playstations', PlaystationController::class);
+    Route::resource(
+        'playstations',
+        PlaystationController::class
+    )->middleware(
+        'permission:manage playstations'
+    );
 });
 
 
@@ -74,21 +91,45 @@ Route::post('/booking', [BookingController::class, 'storeGuest'])
 
 // End public booking routes
 
-Route::middleware(['auth', 'role:pembeli'])
-    ->prefix('pembeli')
-    ->group(function () {
+Route::middleware([
+    'auth',
+    'role:pembeli',
+])
+->prefix('pembeli')
+->group(function () {
 
-        Route::get('/dashboard', [PembeliController::class, 'dashboard'])
-            ->name('pembeli.dashboard');
+    Route::get('/dashboard', [PembeliController::class, 'dashboard'])
+        ->name('pembeli.dashboard');
 
-        Route::resource('bookings', BookingController::class);
+    Route::resource(
+        'bookings',
+        BookingController::class
+    )->middleware(
+        'permission:manage bookings'
+    );
 
-        Route::resource('payments', PaymentController::class);
+    Route::resource(
+        'payments', 
+        PaymentController::class
+    )->middleware(
+        'permission:manage payments'
+    );
 });
 
 Route::post(
     '/midtrans/callback',
     [MidtransCallbackController::class, 'handle']
-);
+)->withoutMiddleware([
+    \App\Http\Middleware\VerifyCsrfToken::class
+]);
+
+Route::get('/test-callback', function () {
+
+    \Illuminate\Support\Facades\Log::info(
+        'TEST CALLBACK BERHASIL'
+    );
+
+    return 'OK';
+});
 
 require __DIR__.'/auth.php';

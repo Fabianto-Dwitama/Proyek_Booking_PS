@@ -31,15 +31,19 @@ class AuthenticatedSessionController extends Controller
 
         $user = auth()->user();
 
-        if ($user->role == 'admin') {
+        if ($user->hasRole('admin')) {
             return redirect('/admin/dashboard');
         }
 
-        if ($user->role == 'owner') {
+        if ($user->hasRole('owner')) {
             return redirect('/owner/dashboard');
         }
 
-        return redirect('/pembeli/dashboard');
+        if ($user->hasRole('pembeli')) {
+            return redirect()->route('pembeli.dashboard');
+        }
+
+        return redirect('/'); // Default redirect for unknown roles
     }
 
     /**

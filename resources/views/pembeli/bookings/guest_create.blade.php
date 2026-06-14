@@ -22,7 +22,7 @@
 
         @if(isset($dbError) && $dbError)
             <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">Tidak dapat terhubung ke database. Data playstation mungkin tidak tersedia.</div>
-        @endif
+        @endrole
 
         <!-- Playstation List -->
         <div>
@@ -58,7 +58,7 @@
                         </div>
                     @endforeach
                 </div>
-            @endif
+            @endrole
         </div>
 
     </div>
@@ -73,7 +73,7 @@
 
             @if(session('error'))
                 <div class="mb-3 p-3 bg-red-50 border border-red-200 text-red-700 rounded">{{ session('error') }}</div>
-            @endif
+            @endrole
 
             <form id="guestBookingForm" action="{{ route('booking.guest.store') }}" method="POST">
                 @csrf
@@ -121,7 +121,7 @@
                                 @endforeach
                             </select>
                             <p id="err_playstation_id" class="text-sm text-red-600 mt-1 hidden"></p>
-                        @endif
+                        @endrole
                     </div>
                 </div>
 

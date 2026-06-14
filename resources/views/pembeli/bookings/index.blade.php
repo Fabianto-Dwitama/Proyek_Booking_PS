@@ -19,7 +19,7 @@
     <p style="color:green;">
         {{ session('success') }}
     </p>
-@endif
+@endrole
 
 <table border="1" cellpadding="10" cellspacing="0">
 

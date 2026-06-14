@@ -42,9 +42,9 @@
                         <p class="mt-2 font-medium text-sm text-green-600">
                             {{ __('A new verification link has been sent to your email address.') }}
                         </p>
-                    @endif
+                    @endrole
                 </div>
-            @endif
+            @endrole
         </div>
 
         <div class="flex items-center gap-4">
@@ -58,7 +58,7 @@
                     x-init="setTimeout(() => show = false, 2000)"
                     class="text-sm text-gray-600"
                 >{{ __('Saved.') }}</p>
-            @endif
+            @endrole
         </div>
     </form>
 </section>
