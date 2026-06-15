@@ -35,7 +35,7 @@
                 <br>
 
                 <a
-                    href="{{ route('playstations.index') }}"
+                    href="{{ route('owner.playstations.index') }}"
                     class="bg-blue-500 text-white px-4 py-2 rounded"
                 >
                     Kelola Playstation

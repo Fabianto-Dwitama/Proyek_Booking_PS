@@ -91,7 +91,7 @@ class BookingController extends Controller
         ]);
 
         return redirect()
-            ->route('bookings.index')
+            ->route('pembeli.bookings.index')
             ->with(
                 'success',
                 'Booking berhasil dibuat'

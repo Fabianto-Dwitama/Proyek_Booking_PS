@@ -217,7 +217,7 @@
                     </span>
 
                 </div>
-=======
+
 <x-app-layout>
     <x-slot name="header">
         <h2>Dashboard Admin</h2>
@@ -235,7 +235,6 @@
                 <p>
                     Monitoring sistem Booking Rental Playstation.
                 </p>
->>>>>>> 93fe63300221a71f78a109423f62e7992856f6c8
 
             </div>
 
@@ -246,6 +245,5 @@
 </div>
 
 @endsection
-=======
     </div>
 </x-app-layout>

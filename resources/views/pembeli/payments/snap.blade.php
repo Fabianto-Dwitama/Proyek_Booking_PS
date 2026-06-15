@@ -53,7 +53,7 @@ document.getElementById('pay-button').onclick = function () {
                 alert('Pembayaran berhasil');
 
                 window.location.href =
-                    "{{ route('bookings.index') }}";
+                    "{{ route('pembeli.bookings.index') }}";
             },
 
             onPending: function(result) {

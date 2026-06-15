@@ -18,7 +18,97 @@ use App\Http\Controllers\MidtransCallbackController;
 
 // Halaman awal
 // Root buka UI pembeli (guest booking)
+Route::get('/session-test', function () {
+
+    session(['test' => 'OK']);
+
+    return 'session disimpan';
+});
+
+Route::get('/session-check', function () {
+
+    return session('test');
+});
+
+Route::get('/root-test', function () {
+
+    return response()->json([
+        'check' => auth()->check(),
+        'email' => auth()->user()?->email,
+        'roles' => auth()->check()
+            ? auth()->user()->getRoleNames()
+            : [],
+    ]);
+});
+
 Route::get('/', function () {
+
+    logger('ROOT HIT');
+
+    if (auth()->check()) {
+
+        logger('USER LOGIN');
+
+        if (auth()->user()->hasRole('admin')) {
+
+            logger('ADMIN');
+
+            return redirect()->route('admin.dashboard');
+        }
+
+        if (auth()->user()->hasRole('owner')) {
+
+            logger('OWNER');
+
+            return redirect()->route('owner.dashboard');
+        }
+
+        if (auth()->user()->hasRole('pembeli')) {
+
+            logger('PEMBELI');
+
+            return redirect()->route('pembeli.dashboard');
+        }
+    }
+
+    logger('GUEST');
+
+    return redirect('/booking');
+});
+
+
+
+
+
+///////////
+
+
+
+
+
+
+
+
+
+
+
+Route::get('/', function () {
+
+    if (auth()->check()) {
+
+        if (auth()->user()->hasRole('admin')) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        if (auth()->user()->hasRole('owner')) {
+            return redirect()->route('owner.dashboard');
+        }
+
+        if (auth()->user()->hasRole('pembeli')) {
+            return redirect()->route('pembeli.dashboard');
+        }
+    }
+
     return redirect('/booking');
 });
 
@@ -43,34 +133,39 @@ Route::middleware('auth')->group(function () {
 
 // ADMIN
 Route::middleware([
-    'auth', 
-    'role:admin'
-    
+    'auth',
+    'role:admin',
 ])
 ->prefix('admin')
+->name('admin.')
 ->group(function () {
 
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])
-        ->name('admin.dashboard');
+    Route::get('/dashboard', [
+        AdminController::class,
+        'dashboard'
+    ])->name('dashboard');
 
-    Route::get(
-        '/reports',
-        [AdminController::class, 'reports']
-    )->middleware(
-        'permission:view reports'
-    )->name('admin.reports');
+    Route::get('/reports', [
+        AdminController::class,
+        'reports'
+    ])
+    ->middleware('permission:view reports')
+    ->name('reports');
 });
 
 // OWNER
 Route::middleware([
     'auth',
-    'role:owner'
+    'role:owner',
 ])
 ->prefix('owner')
+->name('owner.')
 ->group(function () {
 
-    Route::get('/dashboard', [OwnerController::class, 'dashboard'])
-        ->name('owner.dashboard');
+    Route::get('/dashboard', [
+        OwnerController::class,
+        'dashboard'
+    ])->name('dashboard');
 
     Route::resource(
         'playstations',
@@ -80,26 +175,35 @@ Route::middleware([
     );
 });
 
+/*
+|--------------------------------------------------------------------------
+| GUEST BOOKING
+|--------------------------------------------------------------------------
+*/
+
+Route::get(
+    '/booking',
+    [BookingController::class, 'createGuest']
+)->name('booking.guest.create');
+
+Route::post(
+    '/booking',
+    [BookingController::class, 'storeGuest']
+)->name('booking.guest.store');
 
 // PEMBELI
-// Public booking routes (guest booking without login)
-Route::get('/booking', [BookingController::class, 'createGuest'])
-    ->name('booking.guest.create');
-
-Route::post('/booking', [BookingController::class, 'storeGuest'])
-    ->name('booking.guest.store');
-
-// End public booking routes
-
 Route::middleware([
     'auth',
     'role:pembeli',
 ])
 ->prefix('pembeli')
+->name('pembeli.')
 ->group(function () {
 
-    Route::get('/dashboard', [PembeliController::class, 'dashboard'])
-        ->name('pembeli.dashboard');
+    Route::get('/dashboard', [
+        PembeliController::class,
+        'dashboard'
+    ])->name('dashboard');
 
     Route::resource(
         'bookings',
@@ -109,7 +213,7 @@ Route::middleware([
     );
 
     Route::resource(
-        'payments', 
+        'payments',
         PaymentController::class
     )->middleware(
         'permission:manage payments'

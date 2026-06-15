@@ -48,7 +48,7 @@
                 Booking Sekarang
             </a>
 
-            <a href="{{ route('bookings.index') }}"
+            <a href="{{ route('pembeli.bookings.index') }}"
                class="bg-green-600 text-white px-5 py-3 rounded-xl">
                 Booking Saya
             </a>

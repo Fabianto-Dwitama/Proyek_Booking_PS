@@ -75,7 +75,7 @@ class PlaystationController extends Controller
         ]);
 
         return redirect()
-            ->route('playstations.index');
+            ->route('owner.playstations.index');
     }
 
     /**
@@ -86,6 +86,6 @@ class PlaystationController extends Controller
         Playstation::destroy($id);
 
         return redirect()
-            ->route('playstations.index');
+            ->route('owner.playstations.index');
     }
 }
