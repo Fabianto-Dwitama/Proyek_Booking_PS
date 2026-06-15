@@ -1,48 +1,104 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2>Dashboard Owner Rental PS</h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+@section('content')
 
-            <div class="bg-white p-6 rounded shadow">
+<div class="max-w-7xl mx-auto py-8">
 
-                <h3 class="text-lg font-bold">
-                    Selamat Datang Owner
-                </h3>
+<div class="mb-8">
 
-                <p>
-                    Kelola Playstation dan pantau pemesanan rental.
-                </p>
+    <h1 class="text-3xl font-bold">
+        Dashboard Owner
+    </h1>
 
-                <hr class="my-4">
+    <p class="text-gray-500 mt-2">
+        Ringkasan operasional Rental Playstation
+    </p>
 
-                <p>
-                    Total Playstation:
-                    <strong>
-                        {{ $jumlahPlaystation }}
-                    </strong>
-                </p>
+</div>
 
-                <p>
-                    Total Booking:
-                    <strong>
-                        {{ $jumlahBooking }}
-                    </strong>
-                </p>
+<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
 
-                <br>
+    <div class="bg-white rounded-xl shadow p-6">
 
-                <a
-                    href="{{ route('owner.playstations.index') }}"
-                    class="bg-blue-500 text-white px-4 py-2 rounded"
-                >
-                    Kelola Playstation
-                </a>
+        <p class="text-gray-500 text-sm">
+            Total Playstation
+        </p>
 
-            </div>
+        <h2 class="text-4xl font-bold mt-2">
+            {{ $jumlahPlaystation }}
+        </h2>
 
-        </div>
     </div>
-</x-app-layout>
+
+    <div class="bg-white rounded-xl shadow p-6">
+
+        <p class="text-gray-500 text-sm">
+            Total Booking
+        </p>
+
+        <h2 class="text-4xl font-bold mt-2">
+            {{ $jumlahBooking }}
+        </h2>
+
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-6">
+
+        <p class="text-gray-500 text-sm">
+            Playstation Tersedia
+        </p>
+
+        <h2 class="text-4xl font-bold text-green-600 mt-2">
+            {{ $jumlahTersedia }}
+        </h2>
+
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-6">
+
+        <p class="text-gray-500 text-sm">
+            Maintenance
+        </p>
+
+        <h2 class="text-4xl font-bold text-red-600 mt-2">
+            {{ $jumlahMaintenance }}
+        </h2>
+
+    </div>
+
+</div>
+
+<div class="mt-8 bg-white rounded-xl shadow p-6">
+
+    <h3 class="text-xl font-semibold mb-4">
+        Total Pendapatan
+    </h3>
+
+    <p class="text-4xl font-bold text-indigo-600">
+        Rp {{ number_format($totalPendapatan,0,',','.') }}
+    </p>
+
+</div>
+
+<div class="mt-8 bg-white rounded-xl shadow p-6">
+
+    <h3 class="text-xl font-semibold mb-4">
+        Menu Owner
+    </h3>
+
+    <div class="flex flex-wrap gap-4">
+
+        <a
+            href="{{ route('owner.playstations.index') }}"
+            class="px-5 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+        >
+            Kelola Playstation
+        </a>
+
+    </div>
+
+</div>
+
+</div>
+
+@endsection

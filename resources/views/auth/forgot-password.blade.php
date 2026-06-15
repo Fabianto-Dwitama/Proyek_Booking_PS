@@ -1,25 +1,79 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+
+<div class="w-full max-w-md mx-auto">
+
+    <div class="text-center mb-8">
+
+        <h1 class="text-3xl font-bold text-gray-800">
+            Lupa Password
+        </h1>
+
+        <p class="text-gray-500 mt-2">
+            Masukkan email akun Anda untuk menerima link reset password.
+        </p>
+
     </div>
 
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    <div class="bg-white shadow-xl rounded-2xl p-8">
 
-    <form method="POST" action="{{ route('password.email') }}">
-        @csrf
+        <x-auth-session-status
+            class="mb-4"
+            :status="session('status')"
+        />
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+        <form
+            method="POST"
+            action="{{ route('password.email') }}"
+            class="space-y-5"
+        >
+            @csrf
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
-            </x-primary-button>
-        </div>
-    </form>
+            <div>
+
+                <x-input-label
+                    for="email"
+                    :value="__('Email')"
+                />
+
+                <x-text-input
+                    id="email"
+                    class="block mt-2 w-full rounded-lg"
+                    type="email"
+                    name="email"
+                    :value="old('email')"
+                    required
+                    autofocus
+                />
+
+                <x-input-error
+                    :messages="$errors->get('email')"
+                    class="mt-2"
+                />
+
+            </div>
+
+            <button
+                type="submit"
+                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg transition"
+            >
+                Kirim Link Reset Password
+            </button>
+
+            <div class="text-center">
+
+                <a
+                    href="{{ route('login') }}"
+                    class="text-sm text-indigo-600 hover:text-indigo-800"
+                >
+                    Kembali ke Login
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
 </x-guest-layout>

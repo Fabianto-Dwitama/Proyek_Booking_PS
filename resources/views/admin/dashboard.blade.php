@@ -1,249 +1,202 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('content')
 
-<!-- STATISTIC -->
-<div class="grid grid-cols-4 gap-6 mb-8">
+<div class="max-w-7xl mx-auto py-8">
 
-    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200">
+<div class="mb-8">
 
-        <p class="text-slate-500 text-sm">
+    <h1 class="text-3xl font-bold text-gray-800">
+        Dashboard Admin
+    </h1>
+
+    <p class="text-gray-500 mt-2">
+        Monitoring sistem Booking Rental Playstation
+    </p>
+
+</div>
+
+<!-- Statistik -->
+
+<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+
+    <div class="bg-white rounded-xl shadow p-6">
+
+        <p class="text-gray-500 text-sm">
             Total Booking
         </p>
 
-        <h2 class="text-3xl font-bold mt-3">
-            24
+        <h2 class="text-4xl font-bold mt-2">
+            {{ $totalBooking }}
         </h2>
-
-        <p class="text-green-500 text-sm mt-2">
-            +12% dari kemarin
-        </p>
 
     </div>
 
-    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200">
+    <div class="bg-white rounded-xl shadow p-6">
 
-        <p class="text-slate-500 text-sm">
-            Pendapatan Hari Ini
+        <p class="text-gray-500 text-sm">
+            Total Playstation
         </p>
 
-        <h2 class="text-3xl font-bold mt-3">
-            Rp1.250.000
+        <h2 class="text-4xl font-bold mt-2">
+            {{ $totalPlaystation }}
         </h2>
-
-        <p class="text-green-500 text-sm mt-2">
-            +18% dari kemarin
-        </p>
 
     </div>
 
-    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200">
+    <div class="bg-white rounded-xl shadow p-6">
 
-        <p class="text-slate-500 text-sm">
-            PS Aktif
+        <p class="text-gray-500 text-sm">
+            Pembayaran Verified
         </p>
 
-        <h2 class="text-3xl font-bold mt-3">
-            8 Unit
+        <h2 class="text-4xl font-bold text-green-600 mt-2">
+            {{ $totalPayment }}
         </h2>
-
-        <p class="text-slate-500 text-sm mt-2">
-            dari 10 Unit
-        </p>
 
     </div>
 
-    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200">
+    <div class="bg-white rounded-xl shadow p-6">
 
-        <p class="text-slate-500 text-sm">
-            Maintenance
+        <p class="text-gray-500 text-sm">
+            Total Pendapatan
         </p>
 
-        <h2 class="text-3xl font-bold mt-3">
-            2 Unit
+        <h2 class="text-2xl font-bold text-indigo-600 mt-2">
+            Rp {{ number_format($totalRevenue,0,',','.') }}
         </h2>
-
-        <p class="text-red-500 text-sm mt-2">
-            Perlu pengecekan
-        </p>
 
     </div>
 
 </div>
 
-<!-- TABLE + STATUS -->
-<div class="grid grid-cols-3 gap-6">
+<!-- Booking Terbaru -->
 
-    <!-- TABLE -->
-    <div class="col-span-2 bg-white rounded-3xl p-6 shadow-sm border border-slate-200">
+<div class="bg-white shadow rounded-xl overflow-hidden">
 
-        <div class="flex justify-between items-center mb-6">
+    <div class="p-6 border-b">
 
-            <h2 class="text-xl font-bold">
-                Booking Hari Ini
-            </h2>
-
-            <button class="text-blue-600 font-medium">
-                Lihat Semua
-            </button>
-
-        </div>
-
-        <table class="w-full">
-
-            <thead>
-
-                <tr class="text-left text-slate-500 border-b">
-
-                    <th class="pb-4">Pelanggan</th>
-                    <th class="pb-4">PS</th>
-                    <th class="pb-4">Jam</th>
-                    <th class="pb-4">Status</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                <tr class="border-b">
-
-                    <td class="py-5">Andi Setiawan</td>
-                    <td>PS 5 VIP</td>
-                    <td>13:00</td>
-
-                    <td>
-                        <span
-                            class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-600 text-sm">
-
-                            Berlangsung
-
-                        </span>
-                    </td>
-
-                </tr>
-
-                <tr class="border-b">
-
-                    <td class="py-5">Rama Maulana</td>
-                    <td>PS 4 Room</td>
-                    <td>15:00</td>
-
-                    <td>
-                        <span
-                            class="px-3 py-1 rounded-full bg-green-100 text-green-600 text-sm">
-
-                            Selesai
-
-                        </span>
-                    </td>
-
-                </tr>
-
-                <tr>
-
-                    <td class="py-5">Fajar Nugroho</td>
-                    <td>PS 3 Room</td>
-                    <td>17:00</td>
-
-                    <td>
-                        <span
-                            class="px-3 py-1 rounded-full bg-blue-100 text-blue-600 text-sm">
-
-                            Menunggu
-
-                        </span>
-                    </td>
-
-                </tr>
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-    <!-- STATUS -->
-    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200">
-
-        <h2 class="text-xl font-bold mb-6">
-            Status PlayStation
+        <h2 class="text-xl font-semibold">
+            Booking Terbaru
         </h2>
 
-        <div class="space-y-4">
-
-            <div class="p-4 rounded-2xl border">
-
-                <div class="flex justify-between">
-
-                    <h3 class="font-semibold">
-                        PS 5 VIP Room
-                    </h3>
-
-                    <span class="text-green-500 text-sm">
-                        Digunakan
-                    </span>
-
-                </div>
-
-            </div>
-
-            <div class="p-4 rounded-2xl border">
-
-                <div class="flex justify-between">
-
-                    <h3 class="font-semibold">
-                        PS 4 Room
-                    </h3>
-
-                    <span class="text-blue-500 text-sm">
-                        Tersedia
-                    </span>
-
-                </div>
-
-            </div>
-
-            <div class="p-4 rounded-2xl border">
-
-                <div class="flex justify-between">
-
-                    <h3 class="font-semibold">
-                        PS 3 Room
-                    </h3>
-
-                    <span class="text-red-500 text-sm">
-                        Maintenance
-                    </span>
-
-                </div>
-
-<x-app-layout>
-    <x-slot name="header">
-        <h2>Dashboard Admin</h2>
-    </x-slot>
-
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-
-            <div class="bg-white p-6 rounded shadow">
-
-                <h3 class="text-lg font-bold">
-                    Selamat Datang Admin
-                </h3>
-
-                <p>
-                    Monitoring sistem Booking Rental Playstation.
-                </p>
-
-            </div>
-
-        </div>
-
     </div>
+
+    <table class="min-w-full">
+
+        <thead class="bg-gray-50">
+
+            <tr>
+
+                <th class="px-6 py-3 text-left">
+                    No
+                </th>
+
+                <th class="px-6 py-3 text-left">
+                    Pelanggan
+                </th>
+
+                <th class="px-6 py-3 text-left">
+                    Playstation
+                </th>
+
+                <th class="px-6 py-3 text-left">
+                    Tanggal
+                </th>
+
+                <th class="px-6 py-3 text-left">
+                    Jam
+                </th>
+
+                <th class="px-6 py-3 text-left">
+                    Status
+                </th>
+
+            </tr>
+
+        </thead>
+
+        <tbody class="divide-y">
+
+            @forelse($latestBookings as $booking)
+
+            <tr>
+
+                <td class="px-6 py-4">
+                    {{ $loop->iteration }}
+                </td>
+
+                <td class="px-6 py-4">
+                    {{ $booking->user?->name ?? '-' }}
+                </td>
+
+                <td class="px-6 py-4">
+                    {{ $booking->playstation?->nomor_ps ?? '-' }}
+                </td>
+
+                <td class="px-6 py-4">
+                    {{ $booking->tanggal }}
+                </td>
+
+                <td class="px-6 py-4">
+                    {{ $booking->jam_mulai }}
+                </td>
+
+                <td class="px-6 py-4">
+
+                    @if($booking->status === 'confirmed')
+
+                        <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm">
+                            Confirmed
+                        </span>
+
+                    @elseif($booking->status === 'pending')
+
+                        <span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-sm">
+                            Pending
+                        </span>
+
+                    @else
+
+                        <span class="px-3 py-1 rounded-full bg-red-100 text-red-700 text-sm">
+                            Cancelled
+                        </span>
+
+                    @endif
+
+                </td>
+
+            </tr>
+
+            @empty
+
+            <tr>
+
+                <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                    Belum ada data booking
+                </td>
+
+            </tr>
+
+            @endforelse
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<!-- Tombol Cepat -->
+
+<div class="mt-8 flex flex-wrap gap-4">
+
+    <a
+        href="{{ route('admin.reports') }}"
+        class="px-5 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+    >
+        Lihat Laporan
+    </a>
 
 </div>
 
 @endsection
-    </div>
-</x-app-layout>

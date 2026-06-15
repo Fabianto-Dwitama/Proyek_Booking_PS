@@ -40,7 +40,9 @@
                 >
                     @foreach($playstations as $playstation)
                         <option value="{{ $playstation->id }}">
-                            {{ $playstation->kode }} - {{ $playstation->tipe }}
+                            {{ $playstation->nomor_ps }}
+                            -
+                            {{ $playstation->tipe_ps }}
                         </option>
                     @endforeach
                 </select>

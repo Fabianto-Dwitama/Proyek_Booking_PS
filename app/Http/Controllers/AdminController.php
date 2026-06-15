@@ -10,7 +10,40 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        return view('admin.dashboard');
+        $totalBooking = Booking::count();
+
+        $totalPlaystation = Playstation::count();
+
+        $totalPayment = Payment::where(
+            'status',
+            'verified'
+        )->count();
+
+        $totalRevenue = Booking::where(
+            'status',
+            'confirmed'
+        )->sum(
+            'total_harga'
+        );
+
+        $latestBookings = Booking::with([
+            'user',
+            'playstation'
+        ])
+        ->latest()
+        ->take(5)
+        ->get();
+
+        return view(
+            'admin.dashboard',
+            compact(
+                'totalBooking',
+                'totalPlaystation',
+                'totalPayment',
+                'totalRevenue',
+                'latestBookings'
+            )
+        );
     }
 
     public function reports()

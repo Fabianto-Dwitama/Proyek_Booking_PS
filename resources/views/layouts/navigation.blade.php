@@ -238,52 +238,43 @@
 
                 @role('admin')
 
-                    <x-responsive-nav-link
-                        :href="route('admin.dashboard')">
-                        Dashboard
-                    </x-responsive-nav-link>
+                <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                    Dashboard
+                </x-nav-link>
 
-                    @can('view reports')
-                        <x-responsive-nav-link
-                            :href="route('admin.reports')">
-                            Reports
-                        </x-responsive-nav-link>
-                    @endcan
+                <x-nav-link :href="route('admin.reports')" :active="request()->routeIs('admin.reports')">
+                    Laporan
+                </x-nav-link>
 
                 @endrole
 
 
                 @role('owner')
 
-                    <x-responsive-nav-link
-                        :href="route('owner.dashboard')">
-                        Dashboard
-                    </x-responsive-nav-link>
+                <x-nav-link :href="route('owner.dashboard')" :active="request()->routeIs('owner.dashboard')">
+                    Dashboard
+                </x-nav-link>
 
-                    <x-responsive-nav-link
-                        :href="route('owner.playstations.index')">
-                        Playstation
-                    </x-responsive-nav-link>
+                <x-nav-link :href="route('owner.playstations.index')" :active="request()->routeIs('owner.playstations.*')">
+                    Playstation
+                </x-nav-link>
 
                 @endrole
 
 
                 @role('pembeli')
 
-                    <x-responsive-nav-link
-                        :href="route('pembeli.dashboard')">
-                        Dashboard
-                    </x-responsive-nav-link>
+                <x-nav-link :href="route('pembeli.dashboard')" :active="request()->routeIs('pembeli.dashboard')">
+                    Dashboard
+                </x-nav-link>
 
-                    <x-responsive-nav-link
-                        :href="route('pembeli.bookings.create')">
-                        Booking
-                    </x-responsive-nav-link>
+                <x-nav-link :href="route('pembeli.bookings.index')" :active="request()->routeIs('pembeli.bookings.*')">
+                    Booking Saya
+                </x-nav-link>
 
-                    <x-responsive-nav-link
-                        :href="route('pembeli.bookings.index')">
-                        Booking Saya
-                    </x-responsive-nav-link>
+                <x-nav-link :href="route('pembeli.payments.index')" :active="request()->routeIs('pembeli.payments.*')">
+                    Pembayaran
+                </x-nav-link>
 
                 @endrole
 

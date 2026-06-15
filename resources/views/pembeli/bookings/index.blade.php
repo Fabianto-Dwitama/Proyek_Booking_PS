@@ -20,7 +20,7 @@
 
         <tbody class="bg-white divide-y divide-gray-200">
 
-            @foreach($bookings as $booking)
+            @forelse($bookings as $booking)
 
             <tr>
 
@@ -94,7 +94,18 @@
 
             </tr>
 
-            @endforeach
+            @empty
+
+            <tr>
+                <td
+                    colspan="7"
+                    class="px-6 py-10 text-center text-gray-500"
+                >
+                    Belum ada booking.
+                </td>
+            </tr>
+
+            @endforelse
 
         </tbody>
 
