@@ -140,93 +140,118 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'booking_id' => 'required'
-        ]);
+    $request->validate([
+    'booking_id' => 'required'
+    ]);
 
-        $booking = Booking::with('user')
-            ->where('id', $request->booking_id)
-            ->where('user_id', auth()->id())
-            ->firstOrFail();
+    $booking = Booking::with('user')
+        ->where('id', $request->booking_id)
+        ->where('user_id', auth()->id())
+        ->firstOrFail();
 
-        if (
-            $booking->user_id &&
-            $booking->user_id !== auth()->id()
-        ) {
-            abort(403);
-        }
+    if (
+        $booking->user_id &&
+        $booking->user_id !== auth()->id()
+    ) {
+        abort(403);
+    }
 
-        $orderId =
-            'BOOKING-' .
-            $booking->id .
-            '-' .
-            time();
+    $existingPayment = Payment::where(
+        'booking_id',
+        $booking->id
+    )
+    ->whereIn('status', [
+        'pending',
+        'verified'
+    ])
+    ->latest()
+    ->first();
 
-        $params = [
+    if ($existingPayment) {
 
-            'transaction_details' => [
+        return view(
+            'pembeli.payments.snap',
+            [
+                'payment' => $existingPayment
+            ]
+        );
+    }
 
-                'order_id' => $orderId,
+    $orderId =
+        'BOOKING-' .
+        $booking->id .
+        '-' .
+        time();
 
-                'gross_amount' => $booking->total_harga,
+    $params = [
 
-            ],
+        'transaction_details' => [
 
-            'customer_details' => [
+            'order_id' => $orderId,
+
+            'gross_amount' => (int) $booking->total_harga,
+
+        ],
+
+        'customer_details' => [
 
             'first_name' =>
                 $booking->user?->name
-                ?? $booking->guest_name,
+                ?? 'Guest',
 
             'email' =>
                 $booking->user?->email
                 ?? 'guest@example.com',
+
         ],
 
-        ];
+    ];
 
-        $snapToken =
-            Snap::getSnapToken(
-                $params
-            );
+    \Log::info(
+        'MIDTRANS PARAMS',
+        $params
+    );
 
-        $existingPayment = Payment::where(
-            'booking_id',
-            $booking->id
-        )->first();
+    try {
 
-        if ($existingPayment) {
-            return redirect()
-                ->route(
-                    'pembeli.payments.create',
-                    ['booking_id' => $booking->id]
-                )
-                ->with(
-                    'error',
-                    'Payment sudah dibuat'
-                );
-        }
-
-        $payment = Payment::create([
-
-            'booking_id' => $booking->id,
-
-            'metode' => 'Midtrans',
-
-            'nominal' => $booking->total_harga,
-
-            'status' => 'pending',
-
-            'transaction_id' => $orderId,
-
-            'snap_token' => $snapToken,
-
-        ]);
-
-        return view(
-            'pembeli.payments.snap',
-            compact('payment')
+        $snapToken = Snap::getSnapToken(
+            $params
         );
+
+    } catch (\Exception $e) {
+
+        \Log::error(
+            'MIDTRANS SNAP ERROR',
+            [
+                'message' => $e->getMessage()
+            ]
+        );
+
+        return back()->with(
+            'error',
+            $e->getMessage()
+        );
+    }
+
+    $payment = Payment::create([
+
+        'booking_id' => $booking->id,
+
+        'metode' => 'Midtrans',
+
+        'status' => 'pending',
+
+        'transaction_id' => $orderId,
+
+        'snap_token' => $snapToken,
+
+    ]);
+
+    return view(
+        'pembeli.payments.snap',
+        compact('payment')
+    );
+
     }
 
     /**

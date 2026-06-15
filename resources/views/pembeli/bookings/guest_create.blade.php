@@ -159,7 +159,7 @@
         
         bookingModal.classList.remove('hidden');
         setTimeout(()=>{
-            bookingPanel.classList.add('show');
+            bookingPanel.classList.a'show');
             bookingPanel.style.opacity = '1';
             bookingPanel.style.transform = 'scale(1)';
         }, 10);
@@ -178,7 +178,7 @@
         bookingPanel.classList.remove('show');
         bookingPanel.style.opacity = '0';
         bookingPanel.style.transform = 'scale(0.95)';
-        setTimeout(()=> bookingModal.classList.add('hidden'), 200);
+        setTimeout(()=> bookingModal.classList.a'hidden'), 200);
     }
 
     document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeBooking(); });
@@ -194,7 +194,7 @@
         const el = document.getElementById(id);
         if(!el) return;
         el.textContent = '';
-        el.classList.add('hidden');
+        el.classList.a'hidden');
     }
 
     form.addEventListener('submit', function(e){

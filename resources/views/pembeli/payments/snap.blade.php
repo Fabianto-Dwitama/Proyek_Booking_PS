@@ -2,80 +2,80 @@
 
 @section('content')
 
-<div class="container mx-auto p-6">
+<div class="max-w-2xl mx-auto py-8">
 
-    <div class="bg-white shadow rounded p-6">
+    <div class="bg-white shadow rounded-lg">
 
-        <h2 class="text-2xl font-bold mb-4">
-            Pembayaran Midtrans
-        </h2>
+        <div class="border-b px-6 py-4">
 
-        <p class="mb-2">
-            <strong>ID Transaksi:</strong>
-            {{ $payment->transaction_id }}
-        </p>
+            <h2 class="text-xl font-semibold">
+                Pembayaran Midtrans
+            </h2>
 
-        <p class="mb-6">
-            <strong>Total:</strong>
-            Rp {{ number_format($payment->nominal, 0, ',', '.') }}
-        </p>
+        </div>
 
-        <button
-            id="pay-button"
-            class="bg-blue-600 text-white px-6 py-3 rounded"
-        >
-            BAYAR SEKARANG
-        </button>
+        <div class="p-6">
+
+            <p class="text-gray-600 mb-4">
+                Silakan lanjutkan pembayaran booking Anda.
+            </p>
+
+            <div
+                class="bg-blue-100 border border-blue-300 text-blue-800 px-4 py-3 rounded mb-4"
+            >
+                <strong>Transaction ID:</strong>
+                {{ $payment->transaction_id }}
+            </div>
+
+            <button
+                id="pay-button"
+                class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+            >
+                Bayar Sekarang
+            </button>
+
+        </div>
 
     </div>
 
 </div>
 
-@endsection
-
-@push('scripts')
-
 <script
-    src="https://app.sandbox.midtrans.com/snap/snap.js"
-    data-client-key="{{ config('midtrans.client_key') }}">
+src="https://app.sandbox.midtrans.com/snap/snap.js"
+data-client-key="{{ config('midtrans.client_key') }}">
 </script>
 
 <script>
-
-document.getElementById('pay-button').onclick = function () {
+document
+.getElementById('pay-button')
+.addEventListener('click', function () {
 
     snap.pay(
         "{{ $payment->snap_token }}",
         {
-
             onSuccess: function(result) {
 
-                alert('Pembayaran berhasil');
-
                 window.location.href =
-                    "{{ route('pembeli.bookings.index') }}";
+                "{{ route('pembeli.bookings.index') }}";
+
             },
 
             onPending: function(result) {
 
-                alert('Menunggu pembayaran');
+                window.location.href =
+                "{{ route('pembeli.bookings.index') }}";
+
             },
 
             onError: function(result) {
 
                 alert('Pembayaran gagal');
-            },
 
-            onClose: function() {
-
-                alert('Popup pembayaran ditutup');
             }
-
         }
     );
 
-};
-
+});
 </script>
 
-@endpush
+@endsection

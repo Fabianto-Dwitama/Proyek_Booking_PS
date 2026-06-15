@@ -1,106 +1,105 @@
-```blade
-<a
-    href="/pembeli/dashboard"
-    style="
-        background:#6b7280;
-        color:white;
-        padding:8px 12px;
-        text-decoration:none;
-        border-radius:4px;
-    "
->
-    ← Kembali ke Dashboard
-</a>
+@extends('layouts.app')
 
-<br><br>
+@section('content')
 
-<h1>Daftar Booking Saya</h1>
+<div class="bg-white shadow rounded-lg overflow-hidden">
 
-@if(session('success'))
-    <p style="color:green;">
-        {{ session('success') }}
-    </p>
-@endif
+    <table class="min-w-full divide-y divide-gray-200">
 
-<table border="1" cellpadding="10" cellspacing="0">
+        <thead class="bg-gray-50">
+            <tr>
+                <th class="px-6 py-3 text-left">No</th>
+                <th class="px-6 py-3 text-left">Tanggal</th>
+                <th class="px-6 py-3 text-left">Jam</th>
+                <th class="px-6 py-3 text-left">Durasi</th>
+                <th class="px-6 py-3 text-left">Total</th>
+                <th class="px-6 py-3 text-left">Status Booking</th>
+                <th class="px-6 py-3 text-left">Pembayaran</th>
+            </tr>
+        </thead>
 
-    <tr>
-        <th>No</th>
-        <th>Tanggal</th>
-        <th>Jam</th>
-        <th>Durasi</th>
-        <th>Total</th>
-        <th>Status Booking</th>
-        <th>Pembayaran</th>
-    </tr>
+        <tbody class="bg-white divide-y divide-gray-200">
 
-    @foreach($bookings as $booking)
+            @foreach($bookings as $booking)
 
-    <tr>
+            <tr>
 
-        <td>{{ $loop->iteration }}</td>
+                <td class="px-6 py-4">
+                    {{ $loop->iteration }}
+                </td>
 
-        <td>{{ $booking->tanggal }}</td>
+                <td class="px-6 py-4">
+                    {{ $booking->tanggal }}
+                </td>
 
-        <td>{{ $booking->jam_mulai }}</td>
+                <td class="px-6 py-4">
+                    {{ $booking->jam_mulai }}
+                </td>
 
-        <td>{{ $booking->durasi }} Jam</td>
+                <td class="px-6 py-4">
+                    {{ $booking->durasi }} Jam
+                </td>
 
-        <td>
-            Rp {{ number_format($booking->total_harga) }}
-        </td>
+                <td class="px-6 py-4">
+                    Rp {{ number_format($booking->total_harga,0,',','.') }}
+                </td>
 
-        <td>
+                <td class="px-6 py-4">
 
-            @if($booking->status === 'confirmed')
+                    @if($booking->status == 'confirmed')
 
-                <span style="color:green;font-weight:bold;">
-                    Confirmed
-                </span>
+                        <span class="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded">
+                            Confirmed
+                        </span>
 
-            @elseif($booking->status === 'pending')
+                    @elseif($booking->status == 'pending')
 
-                <span style="color:orange;font-weight:bold;">
-                    Pending
-                </span>
+                        <span class="px-2 py-1 text-xs font-semibold text-yellow-800 bg-yellow-100 rounded">
+                            Pending
+                        </span>
 
-            @elseif($booking->status === 'cancelled')
+                    @else
 
-                <span style="color:red;font-weight:bold;">
-                    Cancelled
-                </span>
+                        <span class="px-2 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded">
+                            Cancelled
+                        </span>
 
-            @else
+                    @endif
 
-                {{ $booking->status }}
+                </td>
 
-            @endif
+                <td class="px-6 py-4">
 
-        </td>
+                    @if(
+                        $booking->payment &&
+                        $booking->payment->status === 'verified'
+                    )
 
-        <td>
+                        <span class="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded">
+                            Sudah Dibayar
+                        </span>
 
-            @if($booking->status === 'confirmed')
+                    @else
 
-                <span style="color:green;font-weight:bold;">
-                    Sudah Dibayar
-                </span>
+                        <a
+                            href="{{ route('pembeli.payments.create', ['booking_id' => $booking->id]) }}"
+                            class="inline-flex px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                        >
+                            {{ $booking->payment ? 'Lanjutkan Pembayaran' : 'Bayar Sekarang' }}
+                        </a>
 
-            @else
+                    @endif
 
-                <a
-                    href="/pembeli/payments/create?booking_id={{ $booking->id }}"
-                >
-                    Bayar Sekarang
-                </a>
+                </td>
 
-            @endif
+            </tr>
 
-        </td>
+            @endforeach
 
-    </tr>
+        </tbody>
 
-    @endforeach
+    </table>
 
-</table>
-```
+</div>
+
+@endsection

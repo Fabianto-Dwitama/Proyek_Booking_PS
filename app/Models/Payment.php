@@ -15,8 +15,6 @@ class Payment extends Model
 
         'metode',
 
-        'nominal',
-
         'status',
 
         'transaction_id',

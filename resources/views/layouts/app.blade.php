@@ -40,11 +40,11 @@
             {{ $slot ?? '' }}
 
             @yield('content')
+
+            @stack('scripts')
         </main>
 
     </div>
-
-    @stack('scripts')
 
 </body>
 </html>

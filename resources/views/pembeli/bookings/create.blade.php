@@ -1,84 +1,104 @@
-<a
-    href="/pembeli/dashboard"
-    style="
-        background:#6b7280;
-        color:white;
-        padding:8px 12px;
-        text-decoration:none;
-        border-radius:4px;
-    "
->
-    ← Kembali ke Dashboard
-</a>
+@extends('layouts.app')
 
-<br><br>
+@section('content')
 
-<h1>Buat Booking</h1>
+<div class="max-w-3xl mx-auto py-8">
 
-@if($errors->any())
+<div class="bg-white shadow rounded-lg">
 
-    <div style="color:red">
+    <div class="border-b px-6 py-4">
+        <h2 class="text-2xl font-bold">
+            Buat Booking
+        </h2>
+    </div>
 
-        @foreach($errors->all() as $error)
+    <div class="p-6">
 
-            <p>{{ $error }}</p>
+        <a
+            href="{{ route('pembeli.dashboard') }}"
+            class="inline-block mb-6 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+        >
+            ← Kembali ke Dashboard
+        </a>
 
-        @endforeach
+        <form
+            action="{{ route('pembeli.bookings.store') }}"
+            method="POST"
+            class="space-y-5"
+        >
+            @csrf
+
+            <div>
+                <label class="block mb-2 font-medium">
+                    Playstation
+                </label>
+
+                <select
+                    name="playstation_id"
+                    class="w-full border rounded-lg px-3 py-2"
+                    required
+                >
+                    @foreach($playstations as $playstation)
+                        <option value="{{ $playstation->id }}">
+                            {{ $playstation->kode }} - {{ $playstation->tipe }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div>
+                <label class="block mb-2 font-medium">
+                    Tanggal
+                </label>
+
+                <input
+                    type="date"
+                    name="tanggal"
+                    class="w-full border rounded-lg px-3 py-2"
+                    required
+                >
+            </div>
+
+            <div>
+                <label class="block mb-2 font-medium">
+                    Jam Mulai
+                </label>
+
+                <input
+                    type="time"
+                    name="jam_mulai"
+                    class="w-full border rounded-lg px-3 py-2"
+                    required
+                >
+            </div>
+
+            <div>
+                <label class="block mb-2 font-medium">
+                    Durasi (Jam)
+                </label>
+
+                <input
+                    type="number"
+                    name="durasi"
+                    min="1"
+                    class="w-full border rounded-lg px-3 py-2"
+                    required
+                >
+            </div>
+
+            <button
+                type="submit"
+                class="px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+            >
+                Booking Sekarang
+            </button>
+
+        </form>
 
     </div>
 
-@endrole
+</div>
 
-<form action="{{ route('pembeli.bookings.store') }}" method="POST">
-    @csrf
+</div>
 
-    <label>Playstation</label>
-
-    <select name="playstation_id">
-
-        @foreach($playstations as $ps)
-
-            <option value="{{ $ps->id }}">
-                {{ $ps->nomor_ps }}
-                -
-                {{ $ps->tipe_ps }}
-            </option>
-
-        @endforeach
-
-    </select>
-
-    <br><br>
-
-    <label>Tanggal</label>
-
-    <input
-        type="date"
-        name="tanggal"
-    >
-
-    <br><br>
-
-    <label>Jam Mulai</label>
-
-    <input
-        type="time"
-        name="jam_mulai"
-    >
-
-    <br><br>
-
-    <label>Durasi (Jam)</label>
-
-    <input
-        type="number"
-        name="durasi"
-    >
-
-    <br><br>
-
-    <button type="submit">
-        Booking
-    </button>
-
-</form>
+@endsection
