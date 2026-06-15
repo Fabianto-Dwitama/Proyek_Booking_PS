@@ -8,4 +8,9 @@ class AdminController extends Controller
     {
         return view('admin.dashboard');
     }
+
+    public function reports()
+    {
+        return view('admin.reports');
+    }
 }

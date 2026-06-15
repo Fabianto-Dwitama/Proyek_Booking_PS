@@ -42,7 +42,7 @@
 
             <hr class="my-6">
 
-            <form action="{{ route('payments.store') }}" method="POST">
+            <form action="{{ route('pembeli.payments.store') }}" method="POST">
                 @csrf
 
                 <input

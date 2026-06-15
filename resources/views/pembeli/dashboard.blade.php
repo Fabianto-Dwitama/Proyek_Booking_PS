@@ -43,13 +43,18 @@
 
         <div class="flex gap-4">
 
-            <a href="{{ route('bookings.create') }}"
-               class="bg-blue-600 text-white px-5 py-3 rounded-xl">
-                Booking Sekarang
+            <a href="{{ route('pembeli.bookings.create') }}"
+                class="bg-blue-600 text-white px-5 py-3 rounded-xl">
+                    Booking Sekarang
             </a>
 
-            <a href="{{ route('pembeli.bookings.index') }}"
+             <a href="{{ route('pembeli.payments.index') }}"
                class="bg-green-600 text-white px-5 py-3 rounded-xl">
+                Riwayat Pembayaran
+            </a>
+
+             <a href="{{ route('pembeli.bookings.index') }}"
+               class="bg-yellow-600 text-white px-5 py-3 rounded-xl">
                 Booking Saya
             </a>
 

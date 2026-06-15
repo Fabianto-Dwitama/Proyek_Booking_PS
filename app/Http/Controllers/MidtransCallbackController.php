@@ -10,9 +10,12 @@ class MidtransCallbackController extends Controller
 {
     public function handle(Request $request)
     {
-        Log::info('MIDTRANS CALLBACK MASUK');
-        Log::info($request->all());
-
+        Log::info(
+            'PAYMENT VERIFIED',
+            [
+                'order_id' => $request->order_id
+            ]
+        );
         /*
         |--------------------------------------------------------------------------
         | Verifikasi Signature Midtrans
@@ -106,12 +109,9 @@ class MidtransCallbackController extends Controller
             $request->transaction_status === 'pending'
         ) {
 
-            if ($payment->status !== 'pending') {
-
-                $payment->update([
-                    'status' => 'pending'
-                ]);
-            }
+            $payment->update([
+                'status' => 'pending'
+            ]);
         }
 
         /*
@@ -126,24 +126,21 @@ class MidtransCallbackController extends Controller
             )
         ) {
 
-            if ($payment->status !== 'failed') {
+            $payment->update([
+                'status' => 'failed'
+            ]);
 
-                $payment->update([
-                    'status' => 'failed'
-                ]);
+            $payment->booking()->update([
+                'status' => 'cancelled'
+            ]);
 
-                $payment->booking()->update([
-                    'status' => 'cancelled'
-                ]);
-
-                Log::warning(
-                    'PAYMENT FAILED',
-                    [
-                        'order_id' => $request->order_id,
-                        'status'   => $request->transaction_status
-                    ]
-                );
-            }
+            Log::warning(
+                'PAYMENT FAILED',
+                [
+                    'order_id' => $request->order_id,
+                    'status'   => $request->transaction_status
+                ]
+            );
         }
 
         return response()->json([

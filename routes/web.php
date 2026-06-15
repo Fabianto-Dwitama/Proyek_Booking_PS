@@ -18,80 +18,6 @@ use App\Http\Controllers\MidtransCallbackController;
 
 // Halaman awal
 // Root buka UI pembeli (guest booking)
-Route::get('/session-test', function () {
-
-    session(['test' => 'OK']);
-
-    return 'session disimpan';
-});
-
-Route::get('/session-check', function () {
-
-    return session('test');
-});
-
-Route::get('/root-test', function () {
-
-    return response()->json([
-        'check' => auth()->check(),
-        'email' => auth()->user()?->email,
-        'roles' => auth()->check()
-            ? auth()->user()->getRoleNames()
-            : [],
-    ]);
-});
-
-Route::get('/', function () {
-
-    logger('ROOT HIT');
-
-    if (auth()->check()) {
-
-        logger('USER LOGIN');
-
-        if (auth()->user()->hasRole('admin')) {
-
-            logger('ADMIN');
-
-            return redirect()->route('admin.dashboard');
-        }
-
-        if (auth()->user()->hasRole('owner')) {
-
-            logger('OWNER');
-
-            return redirect()->route('owner.dashboard');
-        }
-
-        if (auth()->user()->hasRole('pembeli')) {
-
-            logger('PEMBELI');
-
-            return redirect()->route('pembeli.dashboard');
-        }
-    }
-
-    logger('GUEST');
-
-    return redirect('/booking');
-});
-
-
-
-
-
-///////////
-
-
-
-
-
-
-
-
-
-
-
 Route::get('/', function () {
 
     if (auth()->check()) {
@@ -204,6 +130,11 @@ Route::middleware([
         PembeliController::class,
         'dashboard'
     ])->name('dashboard');
+    
+    Route::get(
+        'payments/{payment}/sync',
+        [PaymentController::class, 'syncStatus']
+    )->name('payments.sync');
 
     Route::resource(
         'bookings',
@@ -226,14 +157,5 @@ Route::post(
 )->withoutMiddleware([
     \App\Http\Middleware\VerifyCsrfToken::class
 ]);
-
-Route::get('/test-callback', function () {
-
-    \Illuminate\Support\Facades\Log::info(
-        'TEST CALLBACK BERHASIL'
-    );
-
-    return 'OK';
-});
 
 require __DIR__.'/auth.php';

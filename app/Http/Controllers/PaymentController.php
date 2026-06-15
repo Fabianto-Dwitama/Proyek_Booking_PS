@@ -7,6 +7,7 @@ use App\Models\Payment;
 use App\Models\Booking;
 use Midtrans\Config;
 use Midtrans\Snap;
+use Midtrans\Transaction;
 
 class PaymentController extends Controller
 {
@@ -30,19 +31,103 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        //
+    $payments = Payment::with('booking')
+    ->latest()
+    ->get();
+
+    foreach ($payments as $payment) {
+
+        if ($payment->status === 'pending') {
+
+            $this->syncPaymentStatus(
+                $payment
+            );
+        }
     }
+
+    $payments = Payment::with('booking')
+        ->latest()
+        ->get();
+
+    return view(
+        'pembeli.payments.index',
+        compact('payments')
+    );
+
+    }
+
+    private function syncPaymentStatus(
+    Payment $payment
+    )
+    {
+    try {
+
+        $status = Transaction::status(
+            $payment->transaction_id
+        );
+
+        if (
+            in_array(
+                $status->transaction_status,
+                ['capture', 'settlement']
+            )
+        ) {
+
+            $payment->update([
+                'status' => 'verified'
+            ]);
+
+            $payment->booking()->update([
+                'status' => 'confirmed'
+            ]);
+        }
+
+        elseif (
+            in_array(
+                $status->transaction_status,
+                ['deny', 'expire', 'cancel']
+            )
+        ) {
+
+            $payment->update([
+                'status' => 'failed'
+            ]);
+
+            $payment->booking()->update([
+                'status' => 'cancelled'
+            ]);
+        }
+
+    } catch (\Exception $e) {
+
+        \Log::error(
+            'MIDTRANS SYNC ERROR',
+            [
+                'transaction_id' =>
+                    $payment->transaction_id,
+                'message' =>
+                    $e->getMessage()
+            ]
+        );
+    }
+}
 
     /**
      * Halaman pembayaran.
      */
     public function create(Request $request)
     {
-        $booking = Booking::with(
-            'user'
-        )->findOrFail(
-            $request->booking_id
-        );
+        $booking = Booking::with('user')
+            ->where('id', $request->booking_id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        if (
+            auth()->user()->hasRole('pembeli')
+            && $booking->user_id !== auth()->id()
+        ) {
+            abort(403);
+        }
 
         return view(
             'pembeli.payments.create',
@@ -59,11 +144,17 @@ class PaymentController extends Controller
             'booking_id' => 'required'
         ]);
 
-        $booking = Booking::with(
-            'user'
-        )->findOrFail(
-            $request->booking_id
-        );
+        $booking = Booking::with('user')
+            ->where('id', $request->booking_id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        if (
+            $booking->user_id &&
+            $booking->user_id !== auth()->id()
+        ) {
+            abort(403);
+        }
 
         $orderId =
             'BOOKING-' .
@@ -83,11 +174,14 @@ class PaymentController extends Controller
 
             'customer_details' => [
 
-                'first_name' => $booking->user->name,
+            'first_name' =>
+                $booking->user?->name
+                ?? $booking->guest_name,
 
-                'email' => $booking->user->email,
-
-            ],
+            'email' =>
+                $booking->user?->email
+                ?? 'guest@example.com',
+        ],
 
         ];
 
@@ -95,6 +189,23 @@ class PaymentController extends Controller
             Snap::getSnapToken(
                 $params
             );
+
+        $existingPayment = Payment::where(
+            'booking_id',
+            $booking->id
+        )->first();
+
+        if ($existingPayment) {
+            return redirect()
+                ->route(
+                    'pembeli.payments.create',
+                    ['booking_id' => $booking->id]
+                )
+                ->with(
+                    'error',
+                    'Payment sudah dibuat'
+                );
+        }
 
         $payment = Payment::create([
 
@@ -148,5 +259,59 @@ class PaymentController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function syncStatus(Payment $payment)
+    {
+        try {
+
+            $status = Transaction::status(
+                $payment->transaction_id
+            );
+
+            if (
+                in_array(
+                    $status->transaction_status,
+                    ['capture', 'settlement']
+                )
+            ) {
+
+                $payment->update([
+                    'status' => 'verified'
+                ]);
+
+                $payment->booking()->update([
+                    'status' => 'confirmed'
+                ]);
+            }
+
+            elseif (
+                in_array(
+                    $status->transaction_status,
+                    ['deny', 'expire', 'cancel']
+                )
+            ) {
+
+                $payment->update([
+                    'status' => 'failed'
+                ]);
+
+                $payment->booking()->update([
+                    'status' => 'cancelled'
+                ]);
+            }
+
+            return back()->with(
+                'success',
+                'Status berhasil disinkronkan'
+            );
+
+        } catch (\Exception $e) {
+
+            return back()->with(
+                'error',
+                $e->getMessage()
+            );
+        }
     }
 }

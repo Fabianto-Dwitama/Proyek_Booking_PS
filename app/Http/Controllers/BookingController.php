@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Booking;
 use App\Models\Playstation;
@@ -13,10 +14,10 @@ class BookingController extends Controller
      */
     public function index()
     {
-        $bookings = Booking::where(
-            'user_id',
-            auth()->id()
-        )->get();
+        $bookings = Booking::with('playstation')
+            ->where('user_id', auth()->id())
+            ->latest()
+            ->get();
 
         return view(
             'pembeli.bookings.index',
@@ -29,14 +30,16 @@ class BookingController extends Controller
      */
     public function create()
     {
-        $playstations = Playstation::all();
+        $playstations = Playstation::where(
+            'status',
+            'tersedia'
+        )->get();
 
         return view(
             'pembeli.bookings.create',
             compact('playstations')
         );
     }
-
     /**
      * Public guest booking form (no login required)
      */
@@ -61,25 +64,67 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'playstation_id' => 'required',
-            'tanggal' => 'required|date',
-            'jam_mulai' => 'required',
-            'durasi' => 'required|integer|min:1'
-        ]);   
+            'playstation_id' => 'required|exists:playstations,id',
+            'tanggal'        => 'required|date',
+            'jam_mulai'      => 'required',
+            'durasi'         => 'required|integer|min:1|max:24',
+        ]);
     
-        $playstation = Playstation::findOrFail($request->playstation_id);
+        $start = Carbon::parse($request->jam_mulai);
 
-        $total = $request->durasi * $playstation->harga_per_jam;
+        $end = Carbon::parse($request->jam_mulai)
+            ->addHours($request->durasi);
 
-        $existing = Booking::where('playstation_id', $request->playstation_id)
-        ->where('tanggal', $request->tanggal)
-        ->where('jam_mulai', $request->jam_mulai)
-        ->exists();
+        $existing = Booking::where(
+                'playstation_id',
+                $request->playstation_id
+            )
+            ->where(
+                'tanggal',
+                $request->tanggal
+            )
+            ->get()
+            ->first(function ($booking) use ($start, $end) {
 
-        if($existing){
-            return back()->with('error', 'Jadwal sudah dibooking');
+                $bookingStart = Carbon::parse(
+                    $booking->jam_mulai
+                );
+
+                $bookingEnd = Carbon::parse(
+                    $booking->jam_mulai
+                )->addHours(
+                    $booking->durasi
+                );
+
+                return $start < $bookingEnd
+                    && $end > $bookingStart;
+            });
+
+        if ($existing) {
+            return back()->with(
+                'error',
+                'Jadwal bentrok dengan booking lain'
+            );
         }
 
+        $playstation = Playstation::findOrFail(
+            $request->playstation_id
+        );
+
+        if ($playstation->status !== 'tersedia') {
+
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Playstation sedang tidak tersedia.'
+                );
+        }
+        
+        $total =
+            $request->durasi *
+            $playstation->harga_per_jam;
+            
         Booking::create([
             'user_id' => auth()->id(),
             'playstation_id' => $request->playstation_id,
@@ -113,19 +158,44 @@ class BookingController extends Controller
         ]);
 
         try {
-            $playstation = Playstation::findOrFail($request->playstation_id);
+            $start = Carbon::parse($request->jam_mulai);
 
-            $total = $request->durasi * $playstation->harga_per_jam;
+            $end = Carbon::parse($request->jam_mulai)
+                ->addHours($request->durasi);
 
-            $existing = Booking::where('playstation_id', $request->playstation_id)
-                ->where('tanggal', $request->tanggal)
-                ->where('jam_mulai', $request->jam_mulai)
-                ->exists();
+            $existing = Booking::where(
+                    'playstation_id',
+                    $request->playstation_id
+                )
+                ->where(
+                    'tanggal',
+                    $request->tanggal
+                )
+                ->get()
+                ->first(function ($booking) use ($start, $end) {
+
+                    $bookingStart = Carbon::parse(
+                        $booking->jam_mulai
+                    );
+
+                    $bookingEnd = Carbon::parse(
+                        $booking->jam_mulai
+                    )->addHours(
+                        $booking->durasi
+                    );
+
+                    return $start < $bookingEnd
+                        && $end > $bookingStart;
+                });
 
             if ($existing) {
-                return back()->with('error', 'Jadwal sudah dibooking')->withInput();
+                return back()->with(
+                    'error',
+                    'Jadwal bentrok dengan booking lain'
+                );
             }
-        } catch (\Throwable $e) {
+            
+            } catch (\Throwable $e) {
             return back()->with('error', 'Tidak dapat memproses booking karena masalah koneksi database.')->withInput();
         }
 

@@ -15,7 +15,7 @@ return new class extends Migration
             
             $table->id();
 
-            $table->string('nomor_ps');
+            $table->string('nomor_ps')->unique();
 
             $table->string('tipe_ps');
 

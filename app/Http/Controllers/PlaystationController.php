@@ -30,6 +30,12 @@ class PlaystationController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'nomor_ps' => 'required|max:50',
+            'tipe_ps' => 'required|max:50',
+            'harga_per_jam' => 'required|numeric|min:0',
+        ]);
+
         Playstation::create([
         'nomor_ps' => $request->nomor_ps,
         'tipe_ps' => $request->tipe_ps,
@@ -66,6 +72,12 @@ class PlaystationController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $request->validate([
+            'nomor_ps' => 'required|max:50',
+            'tipe_ps' => 'required|max:50',
+            'harga_per_jam' => 'required|numeric|min:0',
+        ]);
+
         $playstation = Playstation::findOrFail($id);
 
         $playstation->update([

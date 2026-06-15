@@ -29,7 +29,7 @@
 
 @endrole
 
-<form action="{{ route('bookings.store') }}" method="POST">
+<form action="{{ route('pembeli.bookings.store') }}" method="POST">
     @csrf
 
     <label>Playstation</label>

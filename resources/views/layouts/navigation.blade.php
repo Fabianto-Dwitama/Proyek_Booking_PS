@@ -69,13 +69,17 @@
 
                             @can('manage bookings')
                                 <x-nav-link
-                                    :href="route('bookings.create')">
+                                    :href="route('pembeli.bookings.create')">
+
                                     Booking
+
                                 </x-nav-link>
 
                                 <x-nav-link
                                     :href="route('pembeli.bookings.index')">
+
                                     Booking Saya
+
                                 </x-nav-link>
                             @endcan
 
@@ -272,7 +276,7 @@
                     </x-responsive-nav-link>
 
                     <x-responsive-nav-link
-                        :href="route('bookings.create')">
+                        :href="route('pembeli.bookings.create')">
                         Booking
                     </x-responsive-nav-link>
 
