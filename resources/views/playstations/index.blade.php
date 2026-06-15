@@ -21,11 +21,11 @@
     <p style="color:green;">
         {{ session('success') }}
     </p>
-@endrole
+@endif
 
 <h3>Tambah Playstation</h3>
 
-<form action="{{ route('playstations.store') }}" method="POST">
+<form action="{{ route('owner.playstations.store') }}" method="POST">
     @csrf
 
     <input
@@ -74,14 +74,14 @@
 
         <td>
 
-            <a href="{{ route('playstations.edit', $ps->id) }}">
+            <a href="{{ route('owner.playstations.edit', $ps->id) }}">
                 Edit
             </a>
 
             |
 
             <form
-                action="{{ route('playstations.destroy', $ps->id) }}"
+                action="{{ route('owner.playstations.destroy', $ps->id) }}"
                 method="POST"
                 style="display:inline;"
             >

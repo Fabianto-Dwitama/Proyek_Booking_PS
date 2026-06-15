@@ -1,7 +1,7 @@
 <h1>Edit Playstation</h1>
 
 <form
-    action="{{ route('playstations.update', $playstation->id) }}"
+    action="{{ route('owner.playstations.update', $playstation->id) }}"
     method="POST"
 >
     @csrf

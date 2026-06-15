@@ -1,3 +1,4 @@
+```blade
 <a
     href="/pembeli/dashboard"
     style="
@@ -19,7 +20,7 @@
     <p style="color:green;">
         {{ session('success') }}
     </p>
-@endrole
+@endif
 
 <table border="1" cellpadding="10" cellspacing="0">
 
@@ -29,7 +30,7 @@
         <th>Jam</th>
         <th>Durasi</th>
         <th>Total</th>
-        <th>Status</th>
+        <th>Status Booking</th>
         <th>Pembayaran</th>
     </tr>
 
@@ -50,16 +51,50 @@
         </td>
 
         <td>
-            {{ $booking->status }}
+
+            @if($booking->status === 'confirmed')
+
+                <span style="color:green;font-weight:bold;">
+                    Confirmed
+                </span>
+
+            @elseif($booking->status === 'pending')
+
+                <span style="color:orange;font-weight:bold;">
+                    Pending
+                </span>
+
+            @elseif($booking->status === 'cancelled')
+
+                <span style="color:red;font-weight:bold;">
+                    Cancelled
+                </span>
+
+            @else
+
+                {{ $booking->status }}
+
+            @endif
+
         </td>
 
         <td>
 
-            <a
-                href="/pembeli/payments/create?booking_id={{ $booking->id }}"
-            >
-                Upload Bukti
-            </a>
+            @if($booking->status === 'confirmed')
+
+                <span style="color:green;font-weight:bold;">
+                    Sudah Dibayar
+                </span>
+
+            @else
+
+                <a
+                    href="/pembeli/payments/create?booking_id={{ $booking->id }}"
+                >
+                    Bayar Sekarang
+                </a>
+
+            @endif
 
         </td>
 
@@ -68,3 +103,4 @@
     @endforeach
 
 </table>
+```
