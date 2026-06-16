@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
@@ -61,5 +63,35 @@ class RolePermissionSeeder extends Seeder
             'manage bookings',
             'manage payments',
         ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Default Users
+        |--------------------------------------------------------------------------
+        */
+
+        $adminUser = User::firstOrCreate(
+            [
+                'email' => 'admin@gmail.com'
+            ],
+            [
+                'name' => 'Administrator',
+                'password' => Hash::make('password'),
+            ]
+        );
+
+        $adminUser->syncRoles('admin');
+
+        $ownerUser = User::firstOrCreate(
+            [
+                'email' => 'owner@gmail.com'
+            ],
+            [
+                'name' => 'Owner Rental',
+                'password' => Hash::make('password'),
+            ]
+        );
+
+        $ownerUser->syncRoles('owner');
     }
 }

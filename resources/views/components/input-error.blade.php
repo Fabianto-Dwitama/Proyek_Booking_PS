@@ -6,4 +6,4 @@
             <li>{{ $message }}</li>
         @endforeach
     </ul>
-@endrole
+@endif
